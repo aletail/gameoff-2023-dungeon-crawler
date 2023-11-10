@@ -19,7 +19,7 @@ func _ready():
 	TargetTimer.wait_time = 0.1
 	TargetTimer.start()
 	TargetTimer.connect("timeout", self.UpdateTarget)
-	
+
 	SpawnTimer = Timer.new()
 	add_child(SpawnTimer)
 	SpawnTimer.autostart = true
@@ -27,10 +27,18 @@ func _ready():
 	SpawnTimer.start()
 	SpawnTimer.connect("timeout", self.WakeMonster)
 	
+func _process(delta):
+	for i in Monsters:
+		if(i.State=="Dead"):
+			print("Dead Monster Found" + str(Monsters.size()))
+			Monsters.erase(i)
+			i.queue_free()
+			
 func SpawnMonster(spawnposition):
-	var monster = Monster.new()
-	monster.position = spawnposition
+	var monsterscene = load("res://Scenes/Characters/Monster.tscn")
+	var monster = monsterscene.instantiate();
 	add_child(monster)
+	monster.setPosition(spawnposition)
 	Monsters.push_back(monster)
 	
 func WakeMonster():
@@ -41,8 +49,8 @@ func WakeMonster():
 func UpdateTarget():
 	if(TargetCount < Monsters.size()):
 		Monsters[TargetCount].State = "Move"
-		var start = Vector2i(Monsters[TargetCount].position) / Map.cell_size
-		var end = Vector2i(Party.getLeader().position) / Map.cell_size
+		var start = Vector2i(Monsters[TargetCount].Body.position) / Map.cell_size
+		var end = Vector2i(Party.getLeader().getPosition()) / Map.cell_size
 		var monster_movelist = Map.FindPath(start, end)
 		Monsters[TargetCount].Move(monster_movelist)
 		TargetCount+=1

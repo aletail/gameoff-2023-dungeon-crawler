@@ -1,7 +1,7 @@
 class_name PartyManager extends Node2D
 
 var PartyMembers:Array = []
-var PartySize = 10
+var PartySize = 5
 
 func _ready():
 	var PartyScene = load("res://Scenes/PartyManager.tscn")
@@ -10,6 +10,8 @@ func _ready():
 	for n in PartySize:
 		var partymember = Character.new()
 		partymember.ID = n
+		partymember.position = Vector2i(0, 16 * n)
+		#partymember.position = Vector2i(0, 0)
 		add_child(partymember)
 		PartyMembers.push_back(partymember)
 		
