@@ -1,17 +1,20 @@
-[gd_scene load_steps=3 format=3 uid="uid://c1fkn2onlk5d7"]
+[gd_scene load_steps=4 format=3 uid="uid://c1fkn2onlk5d7"]
 
 [ext_resource type="Texture2D" uid="uid://co0o7hmw2wmqn" path="res://sprites/red-circle.png" id="1_ctxjm"]
+[ext_resource type="Script" path="res://scripts/Monster.gd" id="1_hcejd"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_mvlkn"]
-radius = 20.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_5q3lp"]
+radius = 9.0
 
-[node name="Monster" type="Node2D"]
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_hcejd")
 
-[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
-scale = Vector2(0.5, 0.5)
+[node name="MonsterBody2D" type="CharacterBody2D" parent="."]
+floor_stop_on_slope = false
+floor_constant_speed = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
-shape = SubResource("CircleShape2D_mvlkn")
-
-[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
+[node name="Sprite2D" type="Sprite2D" parent="MonsterBody2D"]
 texture = ExtResource("1_ctxjm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MonsterBody2D"]
+shape = SubResource("CircleShape2D_5q3lp")

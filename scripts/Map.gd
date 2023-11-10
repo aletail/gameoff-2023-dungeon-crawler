@@ -30,6 +30,3 @@ func draw_grid():
 
 func FindPath(start, end):
 	return PackedVector2Array(astar_grid.get_point_path(start, end))
-	
-func ConvertPosition(pos):
-	return Vector2i(pos) / cell_size
