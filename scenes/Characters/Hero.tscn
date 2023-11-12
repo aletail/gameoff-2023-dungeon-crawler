@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3 uid="uid://s1d8urq3yqyo"]
+
+[ext_resource type="Script" path="res://scripts/Hero.gd" id="1_wcj0w"]
+[ext_resource type="Texture2D" uid="uid://csbu2fy5t5jn2" path="res://sprites/circle.png" id="2_r34uj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wwqbt"]
+size = Vector2(10, 9)
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_wcj0w")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+collision_layer = 2
+floor_stop_on_slope = false
+floor_constant_speed = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_wwqbt")
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
+texture = ExtResource("2_r34uj")
+
+[node name="Label" type="Label" parent="CharacterBody2D"]
+offset_left = -6.0
+offset_top = -12.0091
+offset_right = 6.0
+offset_bottom = 13.9909
+scale = Vector2(1, 0.990991)
+text = "0"
+horizontal_alignment = 1

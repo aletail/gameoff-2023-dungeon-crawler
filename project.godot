@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Gameoff 2023 - Dungeon Crawler"
-run/main_scene="res://tests/Collisions/collisiontesting.tscn"
+run/main_scene="res://tests/Combat/Combat.tscn"
 config/features=PackedStringArray("4.1", "GL Compatibility")
 config/icon="res://icon.svg"
 

@@ -48,11 +48,12 @@ func WakeMonster():
 		
 func UpdateTarget():
 	if(TargetCount < Monsters.size()):
-		Monsters[TargetCount].State = "Move"
-		var start = Vector2i(Monsters[TargetCount].Body.position) / Map.cell_size
-		var end = Vector2i(Party.getLeader().getPosition()) / Map.cell_size
-		var monster_movelist = Map.FindPath(start, end)
-		Monsters[TargetCount].Move(monster_movelist)
-		TargetCount+=1
+		if(Monsters[TargetCount].State != "Combat"):
+			Monsters[TargetCount].State = "Move"
+			var start = Vector2i(Monsters[TargetCount].Body.position) / Map.cell_size
+			var end = Vector2i(Party.getLeader().getPosition()) / Map.cell_size
+			var monster_movelist = Map.FindPath(start, end)
+			Monsters[TargetCount].Move(monster_movelist)
+			TargetCount+=1
 	else:
 		TargetCount = 0

@@ -29,4 +29,8 @@ func draw_grid():
 		draw_line(Vector2(0, y * cell_size.y), Vector2(grid_size.x * cell_size.x, y * cell_size.y), Color.DARK_GRAY, 2.0)
 
 func FindPath(start, end):
+	# TODO: Check for any positions out of bounds of grid
 	return PackedVector2Array(astar_grid.get_point_path(start, end))
+	
+func ConvertToGlobal(pos):
+	return Vector2((pos.x * cell_size.x) + (cell_size.x/2), (pos.y * cell_size.y) + (cell_size.y/2))
