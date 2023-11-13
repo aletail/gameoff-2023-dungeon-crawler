@@ -8,7 +8,7 @@ var PartySize = 10
 var PartyState = "Idle"
 var PartyTargetTimer
 var PartyTargetCount = 0
-var PartyPosition
+var PartyPosition = null
 
 var Monsters:Array = []
 var MonsterTargetTimer
@@ -68,7 +68,7 @@ func _process(delta):
 	
 	if(Monsters.size()==0):
 		pass
-		#setPartyState("Idle")
+		setPartyState("Idle")
 		
 func setPartyState(state):
 	# TODO: May not be working as intended

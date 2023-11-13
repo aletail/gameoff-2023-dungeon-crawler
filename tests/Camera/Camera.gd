@@ -2,12 +2,15 @@ extends Node2D
 
 var map
 var character_manager
+var camera
 
 var monster_spwan_timer
 var monster_spwan_timer_iterator
 var monster_spawn_count = 0
 
 func _ready():
+	camera = get_node("Camera2D")
+	
 	map = Map.new(Vector2i(16,16), Vector2i(50,50))
 	add_child(map)
 	
@@ -26,17 +29,18 @@ func _ready():
 	monster_spwan_timer_iterator = Timer.new()
 	add_child(monster_spwan_timer_iterator)
 	monster_spwan_timer_iterator.autostart = false
-	#monster_spwan_timer_iterator.one_shot = true
 	monster_spwan_timer_iterator.wait_time = 0.2
 	monster_spwan_timer_iterator.connect("timeout", self.SpawnMonsters)
 	
-#	for i in 100:
-#		var rng = RandomNumberGenerator.new()
-#		character_manager.SpawnMonster(map.ConvertToGlobal(Vector2(rng.randi_range(0, map.grid_size.x-1), rng.randi_range(0, map.grid_size.y-1))))
+func _process(delta):
+	if(character_manager.PartyPosition):
+		camera.position = camera.position.lerp(character_manager.PartyPosition, delta * 5)
 		
-#	character_manager.SpawnMonster(map.ConvertToGlobal(Vector2(49, 49)))
-#	character_manager.SpawnMonster(map.ConvertToGlobal(Vector2(15, 15)))
-#	character_manager.SpawnMonster(map.ConvertToGlobal(Vector2(23, 45)))s
+	if(character_manager.PartyState=="Combat"):
+		camera.zoom = camera.zoom.lerp(Vector2(1, 1), delta * 1.25)
+	else:
+		camera.zoom = camera.zoom.lerp(Vector2(2, 2), delta * 1.25)
+	
 func StartSpawnTimer():
 	monster_spwan_timer_iterator.start()
 	character_manager.setPartyState("Combat")
