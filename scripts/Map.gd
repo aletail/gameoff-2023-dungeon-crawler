@@ -7,7 +7,7 @@ var grid_size = Vector2i(10, 10)
 var iterations    = 40000
 var neighbors     = 4
 var ground_chance = 44
-var min_cave_size = 50
+var min_cave_size = 80
 var caves = []
 
 var tile_list_array = []
@@ -20,12 +20,17 @@ func _ready():
 	initialize_grid()
 	
 	# Create tiles
+	var tscene = load("res://Scenes/Tile/Tile.tscn")
 	for x in grid_size.x:
 		tile_list_array.append([])
 		for y in grid_size.y:
-			var t = Tile.new()
-			t.position.x = x
-			t.position.y = y
+			var t = tscene.instantiate();
+			t.get_node("StaticBody2D/Sprite2D").modulate = Color(131/255.0, 121/255.0, 110/255.0)
+			t.get_node("StaticBody2D/CollisionShape2D").disabled = true
+			t.mapx = x
+			t.mapy = y
+			t.position = ConvertToGlobal(Vector2(x, y))
+			add_child(t)
 			tile_list_array[x].append(0)
 			tile_list_array[x][y] = t
 			
@@ -40,13 +45,23 @@ func _ready():
 	for x in grid_size.x:
 		for y in grid_size.y:
 			if tile_list_array[x][y].type == "roof":
-				astar_grid.set_point_solid(tile_list_array[x][y].position, true)
+				tile_list_array[x][y].get_node("StaticBody2D/CollisionShape2D").disabled = false
+				tile_list_array[x][y].get_node("StaticBody2D/Sprite2D").modulate = Color(67/255.0, 62/255.0, 56/255.0)
+				astar_grid.set_point_solid(Vector2(tile_list_array[x][y].mapx, tile_list_array[x][y].mapy), true)
 
 func get_spawn_point():
 	for x in range(0, grid_size.x):
 		for y in range(0, grid_size.y):
 			if tile_list_array[x][y].type == "ground":
 				return tile_list_array[x][y].position
+		
+func get_offscreen_spawn_point(pos):
+	pos = Vector2i(pos) / cell_size
+	for x in range(pos.x, grid_size.x):
+		for y in range(pos.y, grid_size.y):
+			if tile_list_array[x][y].type == "ground":
+				if tile_list_array[x][y].get_node("VisibleOnScreenNotifier2D").is_on_screen()==false:
+					return tile_list_array[x][y].position
 	
 func get_tile_type(x, y):
 	if(x < grid_size.x && y < grid_size.y):
@@ -233,8 +248,9 @@ func initialize_grid():
 	astar_grid.update()
 
 func _draw():
-	draw_grid()
-	fill_walls()
+	pass
+	#draw_grid()
+	#fill_walls()
 	
 func draw_grid():
 	for x in grid_size.x + 1:

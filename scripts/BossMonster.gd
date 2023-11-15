@@ -1,9 +1,9 @@
-class_name Monster extends Character
+class_name BossMonster extends Character
 
 func _ready():
 	super._ready()
-	Speed = 96
-	Hitpoints = 10
+	Speed = 32
+	Hitpoints = 100
 	
 	add_to_group("Monsters")
 
@@ -17,6 +17,8 @@ func _physics_process(delta):
 				if(collision.get_collider().get_parent().is_in_group("Heroes")):
 					get_parent().emit_signal("update_combat", collision.get_collider().get_parent(), self)
 				elif(collision.get_collider().get_parent().is_in_group("Objects")):
+					collision.get_collider().get_parent().get_node("StaticBody2D/CollisionShape2D").disabled = true
+					collision.get_collider().get_parent().get_node("StaticBody2D/Sprite2D").modulate = Color(131/255.0, 121/255.0, 110/255.0)
 					Body.velocity = Body.velocity.slide(collision.get_normal())
 			
 			var d = Body.position.distance_to(point);
