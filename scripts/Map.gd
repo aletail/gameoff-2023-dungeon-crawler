@@ -265,7 +265,20 @@ func fill_walls():
 				draw_rect(Rect2(x * cell_size.x, y * cell_size.y, cell_size.x, cell_size.y), Color.DARK_GRAY)
 				
 func FindPath(start, end):
-	# TODO: Check for any positions out of bounds of grid
+	# TODO This needs testing - when a character is pushed out of bounds through collision, we need to reset the positions
+	if !astar_grid.is_in_boundsv(start):
+		if(start.x < 0):
+			start.x = 0
+		elif(start.y >= grid_size.y):
+			start.y = grid_size.y-1
+		print("Start is out of bounds")
+#	if !astar_grid.is_in_boundsv(end):
+#		if(end.x < 0):
+#			end.x = 0
+#		elif(end.y >= grid_size.y):
+#			end.y = grid_size.y-1
+#		print("End is out of bounds")
+#		pass
 	return PackedVector2Array(astar_grid.get_point_path(start, end))
 	
 func ConvertToGlobal(pos):

@@ -1,12 +1,28 @@
 class_name Monster extends Character
 
+var TauntDebuff
+var TauntDebuffTimer
+
 func _ready():
 	super._ready()
 	Speed = 96
 	Hitpoints = 10
 	
 	add_to_group("Monsters")
+	
+	TauntDebuffTimer = Timer.new()
+	add_child(TauntDebuffTimer)
+	TauntDebuffTimer.autostart = false
+	TauntDebuffTimer.wait_time = 30
+	TauntDebuffTimer.connect("timeout", self.ResetTauntDebuffTimer)
 
+func StartTauntDebuffTimer():
+	TauntDebuff = true
+	TauntDebuffTimer.start()
+	
+func ResetTauntDebuffTimer():
+	TauntDebuff = false
+	
 func _physics_process(delta):
 	if(State=="Move"):
 		if(MoveList.size() > 0):
