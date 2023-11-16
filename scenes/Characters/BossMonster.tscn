@@ -1,13 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://c1fkn2onlk5d7"]
+[gd_scene load_steps=4 format=3 uid="uid://qxuqqc74d5ji"]
 
-[ext_resource type="Script" path="res://scripts/Monster.gd" id="1_hcejd"]
-[ext_resource type="Texture2D" uid="uid://csbu2fy5t5jn2" path="res://sprites/circle.png" id="2_4fcx8"]
+[ext_resource type="Script" path="res://scripts/BossMonster.gd" id="1_ilnxa"]
+[ext_resource type="Texture2D" uid="uid://csbu2fy5t5jn2" path="res://sprites/circle.png" id="2_op2gg"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2saen"]
-radius = 5.0
+radius = 30.0666
 
 [node name="Node2D" type="Node2D"]
-script = ExtResource("1_hcejd")
+script = ExtResource("1_ilnxa")
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="."]
 collision_layer = 2
@@ -15,7 +15,8 @@ floor_stop_on_slope = false
 floor_constant_speed = true
 
 [node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
-texture = ExtResource("2_4fcx8")
+scale = Vector2(4, 4)
+texture = ExtResource("2_op2gg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
 shape = SubResource("CircleShape2D_2saen")

@@ -3,23 +3,21 @@
 [ext_resource type="Script" path="res://scripts/Hero.gd" id="1_wcj0w"]
 [ext_resource type="Texture2D" uid="uid://csbu2fy5t5jn2" path="res://sprites/circle.png" id="2_r34uj"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_wwqbt"]
-size = Vector2(10, 9)
+[sub_resource type="CircleShape2D" id="CircleShape2D_8du5x"]
+radius = 7.01783
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_wcj0w")
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="."]
-collision_layer = 2
-floor_stop_on_slope = false
-floor_constant_speed = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
-position = Vector2(0, -0.5)
-shape = SubResource("RectangleShape2D_wwqbt")
+collision_layer = 0
+collision_mask = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
 texture = ExtResource("2_r34uj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+shape = SubResource("CircleShape2D_8du5x")
 
 [node name="Label" type="Label" parent="CharacterBody2D"]
 offset_left = -6.0

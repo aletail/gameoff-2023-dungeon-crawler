@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://jpunjyidmrdq"]
+
+[ext_resource type="Script" path="res://scripts/Tile.gd" id="1_byepj"]
+[ext_resource type="Texture2D" uid="uid://b6tfbn13byicc" path="res://sprites/tile-wall.png" id="2_70nye"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2a5kd"]
+radius = 7.0
+
+[node name="Tile" type="Node2D"]
+script = ExtResource("1_byepj")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("CircleShape2D_2a5kd")
+disabled = true
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D"]
+texture = ExtResource("2_70nye")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+scale = Vector2(0.8, 0.8)
