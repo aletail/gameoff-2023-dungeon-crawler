@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://bakaj75pvnpka"]
+
+[ext_resource type="Script" path="res://scripts/Director.gd" id="1_tminw"]
+[ext_resource type="PackedScene" uid="uid://cfw0jrlssgtic" path="res://scenes/Interface/UI.tscn" id="2_xvcum"]
+
+[node name="Director" type="Node2D"]
+script = ExtResource("1_tminw")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" parent="CanvasLayer" instance=ExtResource("2_xvcum")]

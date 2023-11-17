@@ -1,16 +1,19 @@
 class_name Map extends Node2D
 
-var astar_grid = AStarGrid2D.new()
-var cell_size = Vector2i(64, 64)
-var grid_size = Vector2i(10, 10)
+# Used for path finding
+var astar_grid:AStarGrid2D = AStarGrid2D.new()
 
-var iterations    = 40000
-var neighbors     = 4
-var ground_chance = 44
-var min_cave_size = 80
-var caves = []
+# Map generation variables
+var cell_size:Vector2 = Vector2i(64, 64)
+var grid_size:Vector2 = Vector2i(10, 10)
+var iterations:int = 40000
+var neighbors:int = 4
+var ground_chance:int = 44
+var min_cave_size:int = 80
+var caves:Array = []
 
-var tile_list_array = []
+# Stores all tiles
+var tile_list_array:Array = []
 
 func _init(cellsize, gridsize):
 	cell_size = cellsize
@@ -29,7 +32,7 @@ func _ready():
 			t.get_node("StaticBody2D/CollisionShape2D").disabled = true
 			t.mapx = x
 			t.mapy = y
-			t.position = ConvertToGlobal(Vector2(x, y))
+			t.position = convert_to_global(Vector2(x, y))
 			add_child(t)
 			tile_list_array[x].append(0)
 			tile_list_array[x][y] = t
@@ -49,31 +52,37 @@ func _ready():
 				tile_list_array[x][y].get_node("StaticBody2D/Sprite2D").modulate = Color(67/255.0, 62/255.0, 56/255.0)
 				astar_grid.set_point_solid(Vector2(tile_list_array[x][y].mapx, tile_list_array[x][y].mapy), true)
 
+# 
 func get_spawn_point():
 	for x in range(0, grid_size.x):
 		for y in range(0, grid_size.y):
 			if tile_list_array[x][y].type == "ground":
 				return tile_list_array[x][y].position
-		
-func get_offscreen_spawn_point(pos):
-	pos = Vector2i(pos) / cell_size
+
+# Returns the first off screen point found from inbound position
+#TODO - This will fail the farther the player gets to the right side of the map
+func get_offscreen_spawn_point(pos:Vector2):
+	pos = Vector2(pos) / cell_size
 	for x in range(pos.x, grid_size.x):
 		for y in range(pos.y, grid_size.y):
 			if tile_list_array[x][y].type == "ground":
 				if tile_list_array[x][y].get_node("VisibleOnScreenNotifier2D").is_on_screen()==false:
 					return tile_list_array[x][y].position
 	
-func get_tile_type(x, y):
+# Returns the type of tile, nothing if not found
+func get_tile_type(x:int, y:int):
 	if(x < grid_size.x && y < grid_size.y):
 		return tile_list_array[x][y].type
 	else:
 		return ""
 	
+# Sets all tiles type to roof
 func fill_roof():
 	for x in range(0, grid_size.x):
 		for y in range(0, grid_size.y):
 			tile_list_array[x][y].set_type("roof")
-			
+		
+# Randomly sets a tile to a ground tile type	
 func random_ground():
 	var rng = RandomNumberGenerator.new()
 	rng.randomize()
@@ -86,7 +95,7 @@ func random_ground():
 			var n = noise.get_noise_2d(x, y)
 			if(n < 0):
 				tile_list_array[x][y].set_type("ground")
-
+#
 func dig_caves():
 	var rng = RandomNumberGenerator.new()
 	rng.randomize()
@@ -102,8 +111,8 @@ func dig_caves():
 		# or make it the ground tile
 		elif check_nearby(x,y) < neighbors:
 			tile_list_array[x][y].set_type("ground")
-
-func check_nearby(x, y):
+#
+func check_nearby(x:int, y:int):
 	var count = 0
 	if get_tile_type(x, y-1) == "roof":  count += 1
 	if get_tile_type(x, y+1) == "roof":  count += 1
@@ -115,6 +124,7 @@ func check_nearby(x, y):
 	if get_tile_type(x-1, y-1) == "roof":  count += 1
 	return count
 
+#
 func get_caves():
 	caves = []
 
@@ -127,6 +137,7 @@ func get_caves():
 		for tile in cave:
 			tile_list_array[tile.x][tile.y].type = "ground"
 			
+#
 func flood_fill(tilex, tiley):
 	var cave = []
 	var to_fill = [Vector2(tilex, tiley)]
@@ -151,6 +162,7 @@ func flood_fill(tilex, tiley):
 	if cave.size() >= min_cave_size:
 		caves.append(cave)
 		
+#	
 func connect_caves():
 	var prev_cave = null
 	var tunnel_caves = caves.duplicate()
@@ -238,7 +250,8 @@ func choose(choices):
 
 	var rand_index = randi() % choices.size()
 	return choices[rand_index]
-	
+
+# 
 func initialize_grid():
 	astar_grid.size = grid_size
 	astar_grid.cell_size = cell_size
@@ -263,8 +276,25 @@ func fill_walls():
 		for y in grid_size.y:
 			if astar_grid.is_point_solid(Vector2i(x, y)):
 				draw_rect(Rect2(x * cell_size.x, y * cell_size.y, cell_size.x, cell_size.y), Color.DARK_GRAY)
-				
-func FindPath(start, end):
+			
+# Turns a point on the grid to not solid	
+func make_ground(v:Vector2):
+	astar_grid.set_point_solid(v, false)
+
+# Adds weight to the selected point
+func add_tile_weight(v:Vector2):
+	if(astar_grid.is_in_boundsv(v)):
+		var current_weight = astar_grid.get_point_weight_scale(v) + 0.5
+		astar_grid.set_point_weight_scale(v, current_weight)
+		
+# Subtracts weight from the selected point
+func subtract_tile_weight(v:Vector2):
+	if(astar_grid.is_in_boundsv(v)):
+		var current_weight = astar_grid.get_point_weight_scale(v) - 0.5
+		astar_grid.set_point_weight_scale(v, current_weight)
+	
+# Find Path
+func find_path(start, end):
 	# TODO This needs testing - when a character is pushed out of bounds through collision, we need to reset the positions
 	if !astar_grid.is_in_boundsv(start):
 		if(start.x < 0):
@@ -281,5 +311,5 @@ func FindPath(start, end):
 #		pass
 	return PackedVector2Array(astar_grid.get_point_path(start, end))
 	
-func ConvertToGlobal(pos):
+func convert_to_global(pos):
 	return Vector2((pos.x * cell_size.x) + (cell_size.x/2), (pos.y * cell_size.y) + (cell_size.y/2))
