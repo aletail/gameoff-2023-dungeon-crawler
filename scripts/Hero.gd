@@ -3,7 +3,17 @@ class_name Hero extends Character
 func _ready():
 	super._ready()
 	
+	var dice = Dice.new()
+	var raceroll = dice.Roll(1, 6)
+	if(raceroll <= 2):
+		Race = "Human"
+	elif(raceroll <= 4):
+		Race = "Dwarf"
+	elif(raceroll <= 6):
+		Race = "Elf"
+	
 	add_to_group("Heroes")
+	
 	var rng = RandomNumberGenerator.new()
 	SpriteColor = Color(rng.randf_range(0, 1), rng.randf_range(0, 1), rng.randf_range(0, 1))
 	get_node("CharacterBody2D/Sprite2D").modulate = SpriteColor

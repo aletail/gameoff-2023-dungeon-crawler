@@ -1,0 +1,126 @@
+[gd_scene load_steps=2 format=3 uid="uid://cfw0jrlssgtic"]
+
+[ext_resource type="Script" path="res://scenes/Interface/UI.gd" id="1_xcdvj"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xcdvj")
+
+[node name="BoxContainer" type="BoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -258.0
+offset_top = -85.0
+offset_right = 258.0
+grow_horizontal = 2
+grow_vertical = 0
+vertical = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 0
+
+[node name="TauntButton" type="Button" parent="BoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+text = "Taunt"
+
+[node name="DamageButton" type="Button" parent="BoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+text = "Damage"
+
+[node name="HealButton" type="Button" parent="BoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+text = "Heal"
+
+[node name="HeroInformation" type="HBoxContainer" parent="BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 10
+
+[node name="Hero_0" type="BoxContainer" parent="BoxContainer/HeroInformation"]
+layout_mode = 2
+vertical = true
+
+[node name="Healthbar" type="ProgressBar" parent="BoxContainer/HeroInformation/Hero_0"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+step = 1.0
+rounded = true
+
+[node name="RaceClass" type="Label" parent="BoxContainer/HeroInformation/Hero_0"]
+layout_mode = 2
+text = "Human Paladin"
+horizontal_alignment = 1
+
+[node name="Hero_1" type="BoxContainer" parent="BoxContainer/HeroInformation"]
+layout_mode = 2
+vertical = true
+
+[node name="Healthbar" type="ProgressBar" parent="BoxContainer/HeroInformation/Hero_1"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+step = 1.0
+rounded = true
+
+[node name="RaceClass" type="Label" parent="BoxContainer/HeroInformation/Hero_1"]
+layout_mode = 2
+text = "Human Paladin"
+horizontal_alignment = 1
+
+[node name="Hero_2" type="BoxContainer" parent="BoxContainer/HeroInformation"]
+layout_mode = 2
+vertical = true
+
+[node name="Healthbar" type="ProgressBar" parent="BoxContainer/HeroInformation/Hero_2"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+step = 1.0
+rounded = true
+
+[node name="RaceClass" type="Label" parent="BoxContainer/HeroInformation/Hero_2"]
+layout_mode = 2
+text = "Human Paladin"
+horizontal_alignment = 1
+
+[node name="Hero_3" type="BoxContainer" parent="BoxContainer/HeroInformation"]
+layout_mode = 2
+vertical = true
+
+[node name="Healthbar" type="ProgressBar" parent="BoxContainer/HeroInformation/Hero_3"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+step = 1.0
+rounded = true
+
+[node name="RaceClass" type="Label" parent="BoxContainer/HeroInformation/Hero_3"]
+layout_mode = 2
+text = "Human Paladin"
+horizontal_alignment = 1
+
+[node name="Hero_4" type="BoxContainer" parent="BoxContainer/HeroInformation"]
+layout_mode = 2
+vertical = true
+
+[node name="Healthbar" type="ProgressBar" parent="BoxContainer/HeroInformation/Hero_4"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+step = 1.0
+rounded = true
+
+[node name="RaceClass" type="Label" parent="BoxContainer/HeroInformation/Hero_4"]
+layout_mode = 2
+text = "Human Paladin"
+horizontal_alignment = 1

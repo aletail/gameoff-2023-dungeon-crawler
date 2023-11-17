@@ -7,10 +7,15 @@ var MoveList:Array = []
 var Follower = null
 var Body
 var Target
-var SpriteColor
 var CombatCooldown = "Ready"
 var CombatGlobalTimer
-var Hitpoints = 20
+var Hitpoints = 30
+var MaxHitpoints = 30
+
+var Race
+var Class
+
+var SpriteColor
 
 func _ready():
 	Body = get_node("CharacterBody2D")
