@@ -24,16 +24,21 @@ func _ready():
 	race_class_text_3 = get_node("BoxContainer/HeroInformation/Hero_3/RaceClass")
 	race_class_text_4 = get_node("BoxContainer/HeroInformation/Hero_4/RaceClass")
 	
-func update_health_bar_0 (curHp, maxHp):
-	healthBar0.value = (100 / maxHp) * curHp
-func update_health_bar_1 (curHp, maxHp):
-	healthBar1.value = (100 / maxHp) * curHp
-func update_health_bar_2 (curHp, maxHp):
-	healthBar2.value = (100 / maxHp) * curHp
-func update_health_bar_3 (curHp, maxHp):
-	healthBar3.value = (100 / maxHp) * curHp
-func update_health_bar_4(curHp, maxHp):
-	healthBar4.value = (100 / maxHp) * curHp
+func update_health_bar_0 (curHp, maxHp, color):
+	healthBar0.value = (curHp / float(maxHp)) * 100.0
+	healthBar0.modulate = color
+func update_health_bar_1 (curHp, maxHp, color):
+	healthBar1.value = (curHp / float(maxHp)) * 100.0
+	healthBar1.modulate = color
+func update_health_bar_2 (curHp, maxHp, color):
+	healthBar2.value = (curHp / float(maxHp)) * 100.0
+	healthBar2.modulate = color
+func update_health_bar_3 (curHp, maxHp, color):
+	healthBar3.value = (curHp / float(maxHp)) * 100.0
+	healthBar3.modulate = color
+func update_health_bar_4(curHp, maxHp, color):
+	healthBar4.value = (curHp / float(maxHp)) * 100.0
+	healthBar4.modulate = color
 	
 func update_race_class_0(text):
 	race_class_text_0.text = text

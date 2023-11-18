@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="Gameoff 2023 - Dungeon Crawler"
-run/main_scene="res://tests/Abilities/Abilities.tscn"
+run/main_scene="res://scenes/Director.tscn"
 config/features=PackedStringArray("4.1", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+iMathHelper="*res://scripts/Helpers/math_helper.gd"
 
 [input]
 
@@ -51,3 +55,4 @@ click={
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.262745, 0.243137, 0.219608, 1)

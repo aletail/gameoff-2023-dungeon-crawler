@@ -1,50 +1,63 @@
 class_name Character extends Node2D
 
-var ID = ""
-var State = "Idle"
-var Speed = 64
-var MoveList:Array = []
-var Follower = null
-var Body
-var Target
-var CombatCooldown = "Ready"
-var CombatGlobalTimer
-var Hitpoints = 30
-var MaxHitpoints = 30
+var id:int
+var race:String
+var class_type:String
+var state:String = "Idle"
+var speed:int = 64
+var attack_speed:int = 1
+var hitpoints:int = 30
+var max_hitpoints:int = 30
 
-var Race
-var Class
+var move_list:Array = []
+var follower = null
+var character_body:CharacterBody2D
+var target = null
+var target_object = null
+var combat_cooldown:String = "Ready"
+var combat_global_timer:Timer
 
-var SpriteColor
+var sprite_color
 
 func _ready():
-	Body = get_node("CharacterBody2D")
+	character_body = get_node("CharacterBody2D")
 	
 	# Setup global combat timer
-	CombatGlobalTimer = Timer.new()
-	add_child(CombatGlobalTimer)
-	CombatGlobalTimer.autostart = false
-	CombatGlobalTimer.wait_time = 1
-	CombatGlobalTimer.connect("timeout", self.ResetCombatGlobalTimer)
-	
-func ResetCombatGlobalTimer():
-	CombatCooldown = "Ready"
-	CombatGlobalTimer.start()
-	
-func setCombatCooldownState(state):
-	if(state=="Cooldown"):
-		CombatCooldown = state
-		CombatGlobalTimer.start()
+	combat_global_timer = Timer.new()
+	add_child(combat_global_timer)
+	combat_global_timer.autostart = false
+	combat_global_timer.wait_time = attack_speed
+	combat_global_timer.connect("timeout", self.reset_combat_global_timer)
 
-func Move(pathlist):
-	MoveList = pathlist
-	setState("Move")
+# Reset the combat timer
+func reset_combat_global_timer():
+	combat_cooldown = "Ready"
+	combat_global_timer.start()
+
+# Update the combat cooldown state, starts the timer
+func set_combat_cooldown_state(state:String):
+	if(state=="Cooldown"):
+		combat_cooldown = state
+		combat_global_timer.start()
+
+# Sets the characters move list and sets the state to "Move"
+func move(pathlist:Array):
+	move_list = pathlist
+	set_state("Move")
 	
+# Get the position of CharacterBody2D
 func getPosition():
-	return Body.position
-	
-func setPosition(pos):
-	Body.position = pos
-	
-func setState(s):
-	State = s
+	return character_body.position
+
+# Sets the position of CharacterBody2D
+func setPosition(pos:Vector2):
+	character_body.position = pos
+
+# Sets the state of the character
+func set_state(s:String):
+	state = s
+
+# Updates the sprite color
+func update_color(color:Color):
+	get_node("CharacterBody2D/Sprite2D").modulate = color
+	sprite_color = color

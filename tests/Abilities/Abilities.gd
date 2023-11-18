@@ -57,7 +57,7 @@ func _input(event):
 			var end = Vector2i(get_global_mouse_position()) / map.cell_size
 			character_manager.Heroes[0].Move(map.FindPath(start, end))
 	
-	if event is InputEventKey and event.pressed:
+	if event is InputEventKey and event.is_released():
 		if event.keycode == KEY_1:
 			SpawnMonster()
 	if event is InputEventKey and event.pressed:
