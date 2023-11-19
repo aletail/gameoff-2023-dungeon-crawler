@@ -25,10 +25,20 @@ var remove_from_combat_queue:Array = []
 # Updates the combat queue with character and monster pair
 signal update_combat(character, monster)
 
-# Abilities
+# Taunt Ability
 var button_taunt
 var taunt_cooldown_state:String = "Ready"
 var taunt_timer:Timer
+
+# Heal Ability
+var button_heal
+var heal_cooldown_state:String = "Ready"
+var heal_timer:Timer
+
+# Damage Ability
+var button_damage
+var damage_cooldown_state:String = "Ready"
+var damage_timer:Timer
 
 func _ready():
 	ui = get_node("CanvasLayer/Control")
@@ -65,7 +75,7 @@ func _ready():
 	# Connect update combat signal
 	update_combat.connect(_on_update_combat)
 	
-	# Abilities
+	# Taunt Ability
 	button_taunt = get_node("CanvasLayer/Control/BoxContainer/HBoxContainer/TauntButton")
 	button_taunt.pressed.connect(self.taunt_button_pressed)
 	
@@ -75,21 +85,44 @@ func _ready():
 	taunt_timer.wait_time = 5
 	taunt_timer.connect("timeout", self.reset_taunt_timer)
 	
+	# Heal Ability
+	button_heal = get_node("CanvasLayer/Control/BoxContainer/HBoxContainer/HealButton")
+	button_heal.pressed.connect(self.heal_button_pressed)
+	
+	heal_timer = Timer.new()
+	add_child(heal_timer)
+	heal_timer.autostart = false
+	heal_timer.wait_time = 5
+	heal_timer.connect("timeout", self.reset_heal_timer)
+	
+	# Damage Ability
+	button_damage = get_node("CanvasLayer/Control/BoxContainer/HBoxContainer/DamageButton")
+	button_damage.pressed.connect(self.damage_button_pressed)
+	
+	damage_timer = Timer.new()
+	add_child(damage_timer)
+	damage_timer.autostart = false
+	damage_timer.wait_time = 5
+	damage_timer.connect("timeout", self.reset_damage_timer)
+	
 # Main loop
 func _process(delta):
-	# Update camera position to follow the company
-	if(hero_manager.company_position):
-		camera.position = camera.position.lerp(hero_manager.company_position, delta * 5)
+	# Update camera position to follow the company leader
+	#if(hero_manager.company_position):
+	camera.position = camera.position.lerp(hero_manager.hero_list[0].getPosition(), delta * 5)
 		
 	if(company_state=="Combat"):
 		camera.zoom = camera.zoom.lerp(Vector2(0.75, 0.75), delta * 1.25)
 	else:
-		camera.zoom = camera.zoom.lerp(Vector2(1.5, 1.5), delta * 1.25)
+		camera.zoom = camera.zoom.lerp(Vector2(1.25, 1.25), delta * 1.25)
+		
+	# Map - update tile weights
+	map.process_tile_weight_updates()
 		
 	# Update Hero and Monster targets
 	hero_manager.update_hero_targets(monster_manager.monster_list)
 	monster_manager.update_monster_targets(hero_manager.hero_list, hero_manager.company_position, hero_manager.tank_list)
-	
+		
 	# Process the combat queue
 	process_combat_queue()
 	
@@ -103,11 +136,18 @@ func _process(delta):
 func _input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
-			var start = Vector2(hero_manager.hero_list[0].getPosition()) / map.cell_size
-			var end = Vector2(get_global_mouse_position()) / map.cell_size
-			hero_manager.hero_list[0].move(map.find_path(start, end))
+			if(company_state=="Idle"):
+				var start = Vector2(hero_manager.hero_list[0].getPosition()) / map.cell_size
+				var end = Vector2(get_global_mouse_position()) / map.cell_size
+				hero_manager.hero_list[0].move(map.find_path(start, end))
 	
 	if event is InputEventKey and event.is_released:
+		if event.keycode == KEY_1:
+			self.taunt_button_pressed()
+		if event.keycode == KEY_2:
+			self.damage_button_pressed()
+		if event.keycode == KEY_3:
+			self.heal_button_pressed()
 		if event.keycode == KEY_SPACE:
 			spawn_horde_position = map.get_offscreen_spawn_point(hero_manager.company_position)
 			spawn_horde_timer.start()
@@ -148,15 +188,19 @@ func process_combat_queue():
 			hero.state = "Dead"
 			#print("Character - Dead")
 		elif hero.combat_cooldown=="Ready":
+			var hitchance = 10
+			if(hero.damage_buff):
+				hitchance = 0
 			# roll for hit and damage
 			var dice = Dice.new()
-			if(dice.roll(1, 20)>10):
+			if(dice.roll(1, 20) > hitchance):
 				var dmg = dice.roll(3, 6)
-				print("Character - Hit for "+ str(dmg) + " damage")
+				if(hero.damage_buff):
+					dmg = dice.roll(4, 6)
+				print("Character - Critical Hit for "+ str(dmg) + " damage")
 				monster.hitpoints = monster.hitpoints - dmg
 			else:
 				print("Character - miss")
-				pass
 			# set combat state to cooldown
 			hero.set_combat_cooldown_state("Cooldown")
 			
@@ -164,10 +208,11 @@ func process_combat_queue():
 			monster.state = "Dead"
 			#print("Monster - Dead")
 		elif monster.combat_cooldown=="Ready":
+			# Check monster target is set to the hero in the queue, if not then there is an active taunt debuff
 			if(monster.target_object == hero):
 				# roll for hit and damage
 				var dice = Dice.new()
-				if(dice.roll(1, 20)>16):
+				if(dice.roll(1, 20)>10):
 					var dmg = dice.roll(1, 2)
 					print("Monster - Hit for "+ str(dmg) + " damage")
 					hero.hitpoints = hero.hitpoints - dmg
@@ -176,7 +221,8 @@ func process_combat_queue():
 				# set combat state to cooldown
 				monster.set_combat_cooldown_state("Cooldown")
 			else:
-				print("Taunt Debuff")
+				pass
+				#print("Taunt Debuff")
 			
 		if hero.hitpoints<=0 || monster.hitpoints<=0:	
 			remove_from_combat_queue.push_back(str(monster.id))
@@ -191,6 +237,7 @@ func update_company_state():
 	if(company_state=="Combat"):
 		# The only way out of the combat state is if there are no monsters left in current spawn
 		if(monster_manager.monster_list.size()==0):
+			map.reset_tile_weights()
 			for h in hero_manager.hero_list.size():
 				var start = Vector2(hero_manager.hero_list[h].getPosition()) / map.cell_size
 				var end = Vector2(hero_manager.hero_last_position[h]) / map.cell_size
@@ -224,6 +271,7 @@ func cleanup_monsters():
 			monster_manager.monster_list.erase(m)
 			m.queue_free()
 
+# Taunt Ability
 func taunt_button_pressed():
 	button_taunt.disabled = true
 	set_taunt_cooldown_state("Cooldown")
@@ -237,3 +285,33 @@ func set_taunt_cooldown_state(state):
 	if(state=="Cooldown"):
 		taunt_cooldown_state = state
 		taunt_timer.start()
+		
+# Heal Ability
+func heal_button_pressed():
+	button_heal.disabled = true
+	set_heal_cooldown_state("Cooldown")
+	hero_manager.heal_company()
+
+func reset_heal_timer():
+	heal_cooldown_state = "Ready"
+	button_heal.disabled = false
+	
+func set_heal_cooldown_state(state):
+	if(state=="Cooldown"):
+		heal_cooldown_state = state
+		heal_timer.start()
+		
+# Damage Ability
+func damage_button_pressed():
+	button_damage.disabled = true
+	set_damage_cooldown_state("Cooldown")
+	hero_manager.add_damage_buff()
+
+func reset_damage_timer():
+	damage_cooldown_state = "Ready"
+	button_damage.disabled = false
+	
+func set_damage_cooldown_state(state):
+	if(state=="Cooldown"):
+		damage_cooldown_state = state
+		damage_timer.start()

@@ -14,12 +14,12 @@ func _ready():
 		speed = 30
 		hitpoints = 100
 		max_hitpoints = hitpoints
-		attack_speed = 5
+		attack_speed = 2
 	else:
 		speed = 96
 		hitpoints = 10
 		max_hitpoints = hitpoints
-		attack_speed = 2
+		attack_speed = 1
 		
 	super._ready()
 	
@@ -58,8 +58,7 @@ func _physics_process(delta):
 					if(is_boss):
 						# Break down any walls
 						collision.get_collider().get_parent().make_ground()
-
-			
+						
 			var d = character_body.position.distance_to(point);
 			if d < 10: # Movement is alot smoother with 10 here
 				get_parent().map.subtract_tile_weight(point)

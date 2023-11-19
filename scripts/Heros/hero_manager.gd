@@ -54,64 +54,74 @@ func spawn_company(spawnposition:Vector2):
 		hero_last_position.push_back(hero.getPosition())
 		
 		# Set class roles
-		if(n==0 || n==1):
+		if n==0 or n==1:
 			hero.setRandomTankClass()
 			tank_list.push_back(hero)
-		elif(n==2 || n==3):
+		elif n==2 or n==3:
 			hero.setRandomDamageClass()
 			damage_list.push_back(hero)
-		elif(n==4):
+		elif n==4:
 			hero.setRandomHealerClass()
 			healer_list.push_back(hero)
 			
 		# Update UI
-		if(n==0):
+		if n==0:
 			ui.update_health_bar_0(hero.hitpoints, hero.max_hitpoints, hero.sprite_color)
 			ui.update_race_class_0(hero.race + "/" + hero.class_type)
-		elif(n==1):
+		elif n==1:
 			ui.update_health_bar_1(hero.hitpoints, hero.max_hitpoints, hero.sprite_color)
 			ui.update_race_class_1(hero.race + "/" + hero.class_type)
-		elif(n==2):
+		elif n==2:
 			ui.update_health_bar_2(hero.hitpoints, hero.max_hitpoints, hero.sprite_color)
 			ui.update_race_class_2(hero.race + "/" + hero.class_type)
-		elif(n==3):
+		elif n==3:
 			ui.update_health_bar_3(hero.hitpoints, hero.max_hitpoints, hero.sprite_color)
 			ui.update_race_class_3(hero.race + "/" + hero.class_type)
-		elif(n==4):
+		elif n==4:
 			ui.update_health_bar_4(hero.hitpoints, hero.max_hitpoints, hero.sprite_color)
 			ui.update_race_class_4(hero.race + "/" + hero.class_type)
 	
 	# Setup followers
 	var previous_member = null
 	for h in hero_list:
-		if(previous_member != null):
+		if previous_member != null:
 			previous_member.follower = h
 		previous_member = h
 		
 # Loop through heroes, assign targets based on distance
 func update_hero_targets(monster_list:Array):
 	for h in hero_list:
-		if(h.target==null):
+		if h.target==null:
 			var last_d = 10000000
 			var tmp_target = null
 			for m in monster_list:
 				var d = h.getPosition().distance_to(m.getPosition())
-				if(d < last_d):
+				if d < last_d:
 					last_d = d
 					tmp_target = m
 			h.target = tmp_target
+			h.target_object = tmp_target
 
 # Loops through heros on timer, updates path to target
 func update_hero_paths(company_state:String):
-	if(company_state=="Combat" || company_state=="Formation"):
-		if(update_hero_path_count < hero_list.size()):
+	if company_state=="Combat" or company_state=="Formation":
+		if update_hero_path_count < hero_list.size():
 			var hero = hero_list[update_hero_path_count]
-			if(hero.target!=null):
+			if hero.target!=null:
 				var d = hero.getPosition().distance_to(hero.target.getPosition())
-				if(d < 200):
+				if d < 200:
 					var start = Vector2(hero.getPosition()) / map.cell_size
 					var end = Vector2(hero.target.getPosition()) / map.cell_size
 					hero.move(map.find_path(start, end))
 				update_hero_path_count+=1
 		else:
 			update_hero_path_count = 0		
+			
+func heal_company():
+	for h in hero_list:
+		h.hitpoints = h.max_hitpoints
+		
+func add_damage_buff():
+	for h in hero_list:
+		h.start_damage_buff_timer()
+	

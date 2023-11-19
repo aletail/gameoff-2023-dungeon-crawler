@@ -1,8 +1,16 @@
 class_name Hero extends Character
 
+# Damage Buff timer
+var damage_buff:String
+var damage_buff_timer:Timer
+var damage_target = null
+
 func _ready():
 	super._ready()
 	
+	# Set attributes
+	speed = 64
+		
 	# Randomly select a race
 	var dice = Dice.new()
 	var raceroll = dice.roll(1, 6)
@@ -23,7 +31,22 @@ func _ready():
 	
 	# Assign a number, simple for debugging
 	get_node("CharacterBody2D/Label").text = str(id)
+	
+	damage_buff_timer = Timer.new()
+	add_child(damage_buff_timer)
+	damage_buff_timer.autostart = false
+	damage_buff_timer.wait_time = 30
+	damage_buff_timer.connect("timeout", self.reset_damage_buff_timer)
 
+# Starts the damage buff timer
+func start_damage_buff_timer():
+	damage_buff = "Init"
+	damage_buff_timer.start()
+
+# Reset the damage buff flag
+func reset_damage_buff_timer():
+	damage_buff = "Not Active"
+	
 # 	
 func _physics_process(delta):
 	if(state=="Move"):
@@ -50,6 +73,8 @@ func _physics_process(delta):
 					if(move_list.size() > 1):
 						follower.move_list.push_back(move_list.pop_front())
 						follower.set_state("Move")
+					else:
+						state = "Idle"
 				else:
 					move_list.pop_front()
 		else:

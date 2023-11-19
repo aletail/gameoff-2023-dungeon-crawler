@@ -14,6 +14,7 @@ var caves:Array = []
 
 # Stores all tiles
 var tile_list_array:Array = []
+var tile_weight_update:Array = []
 
 func _init(cellsize, gridsize):
 	cell_size = cellsize
@@ -283,15 +284,30 @@ func make_ground(v:Vector2):
 
 # Adds weight to the selected point
 func add_tile_weight(v:Vector2):
-	if(astar_grid.is_in_boundsv(v)):
-		var current_weight = astar_grid.get_point_weight_scale(v) + 0.5
-		astar_grid.set_point_weight_scale(v, current_weight)
+	var nv = Vector2(v / cell_size)
+	if(astar_grid.is_in_boundsv(nv)):
+		tile_weight_update.push_back([nv, 0.1])
 		
 # Subtracts weight from the selected point
 func subtract_tile_weight(v:Vector2):
-	if(astar_grid.is_in_boundsv(v)):
-		var current_weight = astar_grid.get_point_weight_scale(v) - 0.5
-		astar_grid.set_point_weight_scale(v, current_weight)
+	var nv = Vector2(v / cell_size)
+	if(astar_grid.is_in_boundsv(nv)):
+		tile_weight_update.push_back([nv, -0.1])
+
+# Reset all tile weights to zero		
+func reset_tile_weights():
+	for x in grid_size.x:
+		for y in grid_size.y:
+			if !astar_grid.is_point_solid(Vector2i(x, y)):
+				astar_grid.set_point_weight_scale(Vector2(x, y), 0)
+
+# Process the queue of tile weight updates				
+func process_tile_weight_updates():
+	for t in tile_weight_update:
+		var current_weight = astar_grid.get_point_weight_scale(t[0]) + t[1]
+		astar_grid.set_point_weight_scale(t[0], current_weight)
+		
+	tile_weight_update.clear()
 	
 # Find Path
 func find_path(start, end):
