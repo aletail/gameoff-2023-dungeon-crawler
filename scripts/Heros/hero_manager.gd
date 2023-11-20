@@ -14,6 +14,7 @@ var hero_last_position:Array = []
 var company_size:int = 5
 # Tracks the position of the company, takes the centroid of all heroes
 var company_position:Vector2
+var company_cave_id:int
 
 # Class Lists - store references to our heros based on their class role
 var tank_list:Array = []
@@ -35,6 +36,13 @@ func _process(delta):
 		points.push_back(h.getPosition())
 	company_position = iMathHelper.get_centroid(points)
 	
+	# Track what cave the company is in
+	var tile = map.get_tile(hero_list[0].getPosition())
+	if(tile):
+		company_cave_id = tile.cave_id
+	else:
+		company_cave_id = 0
+		
 	# Update UI
 	ui.update_health_bar_0(hero_list[0].hitpoints, hero_list[0].max_hitpoints, hero_list[0].sprite_color)
 	ui.update_health_bar_1(hero_list[1].hitpoints, hero_list[1].max_hitpoints, hero_list[1].sprite_color)
@@ -109,9 +117,13 @@ func update_hero_paths(company_state:String):
 			var hero = hero_list[update_hero_path_count]
 			if hero.target!=null:
 				var d = hero.getPosition().distance_to(hero.target.getPosition())
-				if d < 200:
+				if d < 100:
 					var start = Vector2(hero.getPosition()) / map.cell_size
 					var end = Vector2(hero.target.getPosition()) / map.cell_size
+					hero.move(map.find_path(start, end))
+				else:
+					var start = Vector2(hero.getPosition()) / map.cell_size
+					var end = Vector2(hero_last_position[hero.id]) / map.cell_size
 					hero.move(map.find_path(start, end))
 				update_hero_path_count+=1
 		else:

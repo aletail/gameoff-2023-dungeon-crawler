@@ -44,17 +44,35 @@ theme_override_font_sizes/font_size = 12
 text = "1"
 horizontal_alignment = 1
 
+[node name="Cooldown" type="Label" parent="BoxContainer/HBoxContainer/TauntButton"]
+layout_mode = 0
+offset_left = 79.5
+offset_top = 31.0
+offset_right = 100.5
+offset_bottom = 51.0
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+
 [node name="DamageButton" type="Button" parent="BoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
 text = "Damage"
 
 [node name="Label" type="Label" parent="BoxContainer/HBoxContainer/DamageButton"]
+layout_mode = 0
 offset_top = 2.0
 offset_right = 21.0
 offset_bottom = 22.0
 theme_override_font_sizes/font_size = 12
 text = "2"
+horizontal_alignment = 1
+
+[node name="Cooldown" type="Label" parent="BoxContainer/HBoxContainer/DamageButton"]
+offset_left = 79.5
+offset_top = 31.0
+offset_right = 100.5
+offset_bottom = 51.0
+theme_override_font_sizes/font_size = 12
 horizontal_alignment = 1
 
 [node name="HealButton" type="Button" parent="BoxContainer/HBoxContainer"]
@@ -63,11 +81,20 @@ layout_mode = 2
 text = "Heal"
 
 [node name="Label" type="Label" parent="BoxContainer/HBoxContainer/HealButton"]
+layout_mode = 0
 offset_top = 2.0
 offset_right = 21.0
 offset_bottom = 22.0
 theme_override_font_sizes/font_size = 12
 text = "3"
+horizontal_alignment = 1
+
+[node name="Cooldown" type="Label" parent="BoxContainer/HBoxContainer/HealButton"]
+offset_left = 79.5
+offset_top = 31.0
+offset_right = 100.5
+offset_bottom = 51.0
+theme_override_font_sizes/font_size = 12
 horizontal_alignment = 1
 
 [node name="HeroInformation" type="HBoxContainer" parent="BoxContainer"]
@@ -148,4 +175,79 @@ rounded = true
 [node name="RaceClass" type="Label" parent="BoxContainer/HeroInformation/Hero_4"]
 layout_mode = 2
 text = "Human Paladin"
+horizontal_alignment = 1
+
+[node name="GameOverPanel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 251.0
+offset_top = 117.0
+offset_right = 935.0
+offset_bottom = 401.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="GameOverPanel"]
+layout_mode = 2
+offset_top = 63.0
+offset_right = 684.0
+offset_bottom = 207.0
+bbcode_enabled = true
+text = "[p align=center][font_size=30px]Congratulations! 
+You have slayed the _________![/font_size][/p]
+
+[p align=center]On to the next adventure![/p]"
+
+[node name="Button" type="Button" parent="GameOverPanel"]
+layout_mode = 0
+offset_left = 262.0
+offset_top = 207.0
+offset_right = 417.0
+offset_bottom = 238.0
+text = "Quit to main menu"
+
+[node name="GameOverPanel_Defeat" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 251.0
+offset_top = 117.0
+offset_right = 935.0
+offset_bottom = 401.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="GameOverPanel_Defeat"]
+layout_mode = 2
+offset_top = 63.0
+offset_right = 684.0
+offset_bottom = 207.0
+bbcode_enabled = true
+text = "[p align=center][font_size=30px]You have been defeated![/font_size][/p]
+
+[p align=center]Again[/p]"
+
+[node name="Button" type="Button" parent="GameOverPanel_Defeat"]
+layout_mode = 0
+offset_left = 262.0
+offset_top = 207.0
+offset_right = 417.0
+offset_bottom = 238.0
+text = "Quit to main menu"
+
+[node name="BossHealthBarContainer" type="BoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 10.0
+offset_right = 150.0
+offset_bottom = 61.0
+grow_horizontal = 2
+alignment = 1
+vertical = true
+
+[node name="BossHealthBar" type="ProgressBar" parent="BossHealthBarContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+value = 100.0
+
+[node name="Label" type="Label" parent="BossHealthBarContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Boss Name"
 horizontal_alignment = 1

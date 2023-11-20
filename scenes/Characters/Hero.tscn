@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://s1d8urq3yqyo"]
 
 [ext_resource type="Script" path="res://scripts/Heros/hero.gd" id="1_45uwc"]
-[ext_resource type="Texture2D" uid="uid://csbu2fy5t5jn2" path="res://sprites/circle.png" id="2_r34uj"]
+[ext_resource type="Texture2D" uid="uid://cgqlp1huerfn5" path="res://sprites/tank.png" id="2_cwj4e"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8du5x"]
 radius = 7.01783
@@ -14,12 +14,13 @@ collision_layer = 0
 collision_mask = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
-texture = ExtResource("2_r34uj")
+texture = ExtResource("2_cwj4e")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
 shape = SubResource("CircleShape2D_8du5x")
 
 [node name="Label" type="Label" parent="CharacterBody2D"]
+visible = false
 offset_left = -6.0
 offset_top = -12.0091
 offset_right = 6.0

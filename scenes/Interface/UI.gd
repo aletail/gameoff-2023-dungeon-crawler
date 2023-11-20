@@ -1,5 +1,6 @@
 extends Control
 
+var boss_health_bar
 var healthBar0
 var healthBar1
 var healthBar2
@@ -10,8 +11,22 @@ var race_class_text_1
 var race_class_text_2
 var race_class_text_3
 var race_class_text_4
+var game_over_panel
+var game_over_panel_defeat
+var taunt_timer_label
+var damage_timer_label
+var heal_timer_label
 
 func _ready():
+	game_over_panel = get_node("GameOverPanel")
+	game_over_panel.visible = false
+	
+	game_over_panel_defeat = get_node("GameOverPanel_Defeat")
+	game_over_panel_defeat.visible = false
+	
+	boss_health_bar = get_node("BossHealthBarContainer")
+	boss_health_bar.visible = false
+	
 	healthBar0 = get_node("BoxContainer/HeroInformation/Hero_0/Healthbar")
 	healthBar1 = get_node("BoxContainer/HeroInformation/Hero_1/Healthbar")
 	healthBar2 = get_node("BoxContainer/HeroInformation/Hero_2/Healthbar")
@@ -24,6 +39,13 @@ func _ready():
 	race_class_text_3 = get_node("BoxContainer/HeroInformation/Hero_3/RaceClass")
 	race_class_text_4 = get_node("BoxContainer/HeroInformation/Hero_4/RaceClass")
 	
+	taunt_timer_label = get_node("BoxContainer/HBoxContainer/TauntButton/Cooldown")
+	damage_timer_label = get_node("BoxContainer/HBoxContainer/DamageButton/Cooldown")
+	heal_timer_label = get_node("BoxContainer/HBoxContainer/HealButton/Cooldown")
+	
+func update_health_bar_boss (curHp, maxHp, color):
+	boss_health_bar.get_node("BossHealthBar").value = (curHp / float(maxHp)) * 100.0
+	boss_health_bar.get_node("BossHealthBar").modulate = color
 func update_health_bar_0 (curHp, maxHp, color):
 	healthBar0.value = (curHp / float(maxHp)) * 100.0
 	healthBar0.modulate = color
@@ -50,3 +72,11 @@ func update_race_class_3(text):
 	race_class_text_3.text = text
 func update_race_class_4(text):
 	race_class_text_4.text = text
+	
+func update_taunt_timer(time_left):
+	taunt_timer_label.text = str(snapped(time_left, 0))
+func update_damage_timer(time_left):
+	damage_timer_label.text = str(snapped(time_left, 0))
+func update_heal_timer(time_left):
+	heal_timer_label.text = str(snapped(time_left, 0))
+	

@@ -42,8 +42,9 @@ func set_combat_cooldown_state(state:String):
 
 # Sets the characters move list and sets the state to "Move"
 func move(pathlist:Array):
-	move_list = pathlist
-	set_state("Move")
+	if state != "Down":
+		move_list = pathlist
+		set_state("Move")
 	
 # Get the position of CharacterBody2D
 func getPosition():
