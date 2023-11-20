@@ -19,6 +19,7 @@ func spawn_monster(spawnposition:Vector2, company_position:Vector2):
 	add_child(monster)
 	monster.setPosition(spawnposition)
 	monster.target = company_position
+	monster.move(map.find_path(spawnposition, company_position))
 	monster_list.push_back(monster)
 	
 # Spawns a boss monster
@@ -31,6 +32,7 @@ func spawn_boss(spawnposition:Vector2, company_position:Vector2):
 	monster.setPosition(spawnposition)
 	monster.target = company_position
 	monster_list.push_back(monster)
+	return monster
 
 # Loop through heroes, assign targets based on distance
 func update_monster_targets(HeroList:Array, company_position:Vector2, tank_list:Array):
@@ -40,36 +42,41 @@ func update_monster_targets(HeroList:Array, company_position:Vector2, tank_list:
 			# Do nothing until the debuff expires
 			pass
 		elif(m.taunt_debuff=="Init"):
-			m.taunt_debuff = "Active"
-			var d = Dice.new()
-			if d.roll(1,2)==1:
-				m.target = tank_list[0].getPosition()
-				m.target_object = tank_list[0]
-				m.update_color(tank_list[0].sprite_color)
-			else:
-				m.target = tank_list[1].getPosition()
-				m.target_object = tank_list[1]
-				m.update_color(tank_list[1].sprite_color)
-			get_parent().remove_from_combat_queue.push_back(str(m.id))
+			if(m.target_object):
+				if m.target_object.is_tank:
+					pass
+				else:
+					m.taunt_debuff = "Active"
+					var d = Dice.new()
+					if d.roll(1,2)==1:
+						m.target = tank_list[0].getPosition()
+						m.target_object = tank_list[0]
+						m.update_color(tank_list[0].sprite_color)
+					else:
+						m.target = tank_list[1].getPosition()
+						m.target_object = tank_list[1]
+						m.update_color(tank_list[1].sprite_color)
+					get_parent().remove_from_combat_queue.push_back(str(m.id))
 		else:
 			var last_d = 10000000
 			var tmp_target = null
 			var hero_target = null
 			for h in HeroList:
-				var d = m.getPosition().distance_to(h.getPosition())
-				if(d < last_d):
-					last_d = d
-					tmp_target = h.getPosition()
-					hero_target = h
+				if h.state != "Down":
+					var d = m.getPosition().distance_to(h.getPosition())
+					if(d < last_d):
+						last_d = d
+						tmp_target = h.getPosition()
+						hero_target = h
 			# If no suitable target is found, set the target to the company position
 			if(tmp_target==null):
 				tmp_target = company_position
 			
 			if(tmp_target != m.target):
-				if(hero_target):
-					m.update_color(hero_target.sprite_color)
-				else:
-					m.update_color(Color(1,1,1))
+#				if(hero_target):
+#					m.update_color(hero_target.sprite_color)
+#				else:
+#					m.update_color(Color(1,1,1))
 				m.target = tmp_target
 				m.target_object = hero_target
 	
@@ -78,6 +85,19 @@ func update_monster_paths():
 	if(update_monster_paths_count < monster_list.size()):
 		var monster = monster_list[update_monster_paths_count]
 		var start = Vector2(monster.getPosition()) / map.cell_size
+		
+		# TODO: Check if monster is stuck on a solid tile
+		if(!monster.is_boss):
+			if map.get_tile_type(start.x, start.y)=="roof":
+				print("UPDATING START TILE")
+				start = map.get_offscreen_spawn_point(monster.getPosition(), get_parent().track_current_cave)
+				monster.setPosition(start)
+				#var newstart = map.get_nearby_ground(start.x, start.y)
+				#start = Vector2(newstart.mapx, newstart.mapy)
+				#start = get_parent().spawn_horde_position
+				#monster.setPosition(start)
+				#monster.state = "Dead"
+			
 		var end = Vector2(monster.target) / map.cell_size
 		monster.move(map.find_path(start, end))
 		update_monster_paths_count+=1

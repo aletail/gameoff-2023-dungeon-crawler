@@ -9,8 +9,9 @@ var grid_size:Vector2 = Vector2i(10, 10)
 var iterations:int = 40000
 var neighbors:int = 4
 var ground_chance:int = 44
-var min_cave_size:int = 80
+var min_cave_size:int = 40
 var caves:Array = []
+var cave_object_list:Array = []
 
 # Stores all tiles
 var tile_list_array:Array = []
@@ -29,7 +30,8 @@ func _ready():
 		tile_list_array.append([])
 		for y in grid_size.y:
 			var t = tscene.instantiate();
-			t.get_node("StaticBody2D/Sprite2D").modulate = Color(131/255.0, 121/255.0, 110/255.0)
+			#t.get_node("StaticBody2D/Sprite2D").modulate = Color(131/255.0, 121/255.0, 110/255.0)
+			t.get_node("StaticBody2D/Sprite2D").visible = true
 			t.get_node("StaticBody2D/CollisionShape2D").disabled = true
 			t.mapx = x
 			t.mapy = y
@@ -45,12 +47,17 @@ func _ready():
 	get_caves()
 	connect_caves()
 	
+	print(caves.size())
+	for c in caves:
+		pass
+	
 	# Update grid with solid positions
 	for x in grid_size.x:
 		for y in grid_size.y:
 			if tile_list_array[x][y].type == "roof":
 				tile_list_array[x][y].get_node("StaticBody2D/CollisionShape2D").disabled = false
-				tile_list_array[x][y].get_node("StaticBody2D/Sprite2D").modulate = Color(67/255.0, 62/255.0, 56/255.0)
+				#tile_list_array[x][y].get_node("StaticBody2D/Sprite2D").modulate = Color(67/255.0, 62/255.0, 56/255.0)
+				tile_list_array[x][y].get_node("StaticBody2D/Sprite2D").visible = false
 				astar_grid.set_point_solid(Vector2(tile_list_array[x][y].mapx, tile_list_array[x][y].mapy), true)
 
 # 
@@ -62,13 +69,38 @@ func get_spawn_point():
 
 # Returns the first off screen point found from inbound position
 #TODO - This will fail the farther the player gets to the right side of the map
-func get_offscreen_spawn_point(pos:Vector2):
+func get_offscreen_spawn_point(pos:Vector2, cave_id:int):
 	pos = Vector2(pos) / cell_size
-	for x in range(pos.x, grid_size.x):
-		for y in range(pos.y, grid_size.y):
-			if tile_list_array[x][y].type == "ground":
-				if tile_list_array[x][y].get_node("VisibleOnScreenNotifier2D").is_on_screen()==false:
-					return tile_list_array[x][y].position
+	
+#	for x in range(pos.x, grid_size.x):
+#		for y in range(pos.y, grid_size.y):
+#			var t = get_tile(Vector2(x, y-1))
+#			if tile_list_array[x][y-1].get_node("VisibleOnScreenNotifier2D").is_on_screen()==false:
+#				if tile_list_array[x][y-1].type == "ground":
+#					return tile_list_array[x][y-1].position
+	for tile in caves[cave_id-1]:
+		var d = pos.distance_to(tile_list_array[tile.x][tile.y].position)
+		if(d > 50):
+			print("Ideal Spawn")
+			return tile_list_array[tile.x][tile.y].position
+
+	
+#	pos = Vector2(pos) / cell_size
+#	for x in range(0, grid_size.x):
+#		for y in range(0, grid_size.y):
+#			if tile_list_array[x][y].type == "ground" and tile_list_array[x][y].cave_id == cave_id:
+#				var d = pos.distance_to(tile_list_array[x][y].position)
+#				if(d < 50):
+#					print("Ideal Spawn")
+#					return tile_list_array[x][y].position
+#
+#	for x in range(pos.x, grid_size.x):
+#		for y in range(pos.y, grid_size.y):
+#			if tile_list_array[x][y].type == "ground":
+#				if tile_list_array[x][y].get_node("VisibleOnScreenNotifier2D").is_on_screen()==false:
+#					return tile_list_array[x][y].position
+	
+	
 	
 # Returns the type of tile, nothing if not found
 func get_tile_type(x:int, y:int):
@@ -125,6 +157,42 @@ func check_nearby(x:int, y:int):
 	if get_tile_type(x-1, y-1) == "roof":  count += 1
 	return count
 
+func get_nearby_ground(x:int, y:int):
+	var t = get_tile_type(x, y-1)
+	var tile = null
+	if t == "ground":  
+		return get_tile(Vector2(x, y-1))
+	
+	t = get_tile_type(x, y+1)
+	if t == "ground":  
+		return get_tile(Vector2(x, y+1))
+	
+	t = get_tile_type(x-1, y)
+	if t == "ground":
+		return get_tile(Vector2(x-1, y))
+		
+	t = get_tile_type(x+1, y) 
+	if t == "ground":  
+		return get_tile(Vector2(x+1, y))
+		
+	t = get_tile_type(x+1, y+1)
+	if t == "ground":
+		return get_tile(Vector2(x+1, y+1))
+		
+	t = get_tile_type(x+1, y-1)
+	if t == "ground":
+		return get_tile(Vector2(x+1, y-1))
+		
+	t = get_tile_type(x-1, y+1)
+	if t == "ground":
+		return get_tile(Vector2(x-1, y+1))
+		
+	t = get_tile_type(x-1, y-1)
+	if t == "ground":
+		return get_tile(Vector2(x-1, y-1))
+		
+	return null
+
 #
 func get_caves():
 	caves = []
@@ -133,13 +201,21 @@ func get_caves():
 		for y in range (0, grid_size.y):
 			if tile_list_array[x][y].type == "ground":
 				flood_fill(x,y)
-
+	
+	var count = 0
 	for cave in caves:
+		var cave_object = Cave.new()
+		cave_object.id = count
+		cave_object_list.push_back(cave_object)
+		count+=1
 		for tile in cave:
 			tile_list_array[tile.x][tile.y].type = "ground"
+			tile_list_array[tile.x][tile.y].cave_id = count
+			tile_list_array[tile.x][tile.y].get_node("Label").text = str(count)
 			
 #
 func flood_fill(tilex, tiley):
+	
 	var cave = []
 	var to_fill = [Vector2(tilex, tiley)]
 	while to_fill:
@@ -186,7 +262,7 @@ func create_tunnel(point1, point2, cave):
 	var steps = 0
 	var drunk_x = point2[0]
 	var drunk_y = point2[1]
-
+	
 	while steps < max_steps and !cave.has(Vector2(drunk_x, drunk_y)):
 		steps += 1
 
@@ -244,6 +320,15 @@ func create_tunnel(point1, point2, cave):
 				# optional: make tunnel wider
 				#tile_list_array[drunk_x+1][drunk_y].type = "ground"
 				#tile_list_array[drunk_x+1][drunk_y+1].type = "ground"
+	
+	# Check if tunnel was created, if not use a simple path to forge a tunnel
+	if steps >= 500:
+		var tunnel_path = find_path(point1, point2)
+		for t in tunnel_path:
+			var mt = Vector2(t / cell_size)
+			if tile_list_array[mt.x][mt.y].type == "roof":
+				tile_list_array[mt.x][mt.y].type = "ground"
+		
 				
 # Util.choose(["one", "two"])   returns one or two
 func choose(choices):
@@ -311,21 +396,23 @@ func process_tile_weight_updates():
 	
 # Find Path
 func find_path(start, end):
-	# TODO This needs testing - when a character is pushed out of bounds through collision, we need to reset the positions
 	if !astar_grid.is_in_boundsv(start):
 		if(start.x < 0):
 			start.x = 0
 		elif(start.y >= grid_size.y):
 			start.y = grid_size.y-1
-		print("Start is out of bounds")
-#	if !astar_grid.is_in_boundsv(end):
-#		if(end.x < 0):
-#			end.x = 0
-#		elif(end.y >= grid_size.y):
-#			end.y = grid_size.y-1
-#		print("End is out of bounds")
-#		pass
-	return PackedVector2Array(astar_grid.get_point_path(start, end))
+		#print("Start is out of bounds: " + str(start))
+	var r = PackedVector2Array(astar_grid.get_point_path(start, end))
+	if(r):
+		return r
+	else:
+		#print("path not found")
+		return []
+	
+func get_tile(v:Vector2):
+	var pos = Vector2(v)/cell_size
+	if pos.x < grid_size.x and pos.y < grid_size.y:
+		return tile_list_array[pos.x][pos.y]
 	
 func convert_to_global(pos):
 	return Vector2((pos.x * cell_size.x) + (cell_size.x/2), (pos.y * cell_size.y) + (cell_size.y/2))

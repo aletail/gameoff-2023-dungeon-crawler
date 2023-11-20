@@ -11,10 +11,10 @@ var is_boss:bool = false
 func _ready():
 	# Set attributes based on type of monster
 	if(is_boss):
-		speed = 30
-		hitpoints = 100
+		speed = 64
+		hitpoints = 1000
 		max_hitpoints = hitpoints
-		attack_speed = 2
+		attack_speed = 1
 	else:
 		speed = 96
 		hitpoints = 10
@@ -28,7 +28,7 @@ func _ready():
 	taunt_debuff_timer = Timer.new()
 	add_child(taunt_debuff_timer)
 	taunt_debuff_timer.autostart = false
-	taunt_debuff_timer.wait_time = 30
+	taunt_debuff_timer.wait_time = 10
 	taunt_debuff_timer.connect("timeout", self.reset_taunt_debuff_timer)
 
 # Starts the taunt debuff timer
@@ -53,7 +53,7 @@ func _physics_process(delta):
 			if collision:
 				if(collision.get_collider().get_parent().is_in_group("Heroes")):
 					get_parent().get_parent().emit_signal("update_combat", collision.get_collider().get_parent(), self)
-				elif(collision.get_collider().get_parent().is_in_group("Objects")):
+				if(collision.get_collider().get_parent().is_in_group("Objects")):
 					character_body.velocity = character_body.velocity.slide(collision.get_normal())
 					if(is_boss):
 						# Break down any walls

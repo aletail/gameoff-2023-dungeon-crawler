@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://c1fkn2onlk5d7"]
 
 [ext_resource type="Script" path="res://scripts/Monsters/monster.gd" id="1_hcejd"]
-[ext_resource type="Texture2D" uid="uid://csbu2fy5t5jn2" path="res://sprites/circle.png" id="2_4fcx8"]
+[ext_resource type="Texture2D" uid="uid://dnf7wnnme7136" path="res://sprites/monster.png" id="2_8uc1g"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2saen"]
 radius = 5.0
@@ -11,12 +11,12 @@ script = ExtResource("1_hcejd")
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="."]
 collision_layer = 2
-collision_mask = 3
+collision_mask = 2
 floor_stop_on_slope = false
 floor_constant_speed = true
 
 [node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
-texture = ExtResource("2_4fcx8")
+texture = ExtResource("2_8uc1g")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
 shape = SubResource("CircleShape2D_2saen")

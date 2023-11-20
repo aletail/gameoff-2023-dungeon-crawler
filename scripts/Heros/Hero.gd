@@ -5,6 +5,10 @@ var damage_buff:String
 var damage_buff_timer:Timer
 var damage_target = null
 
+var is_tank:bool = false
+var is_damage:bool = false
+var is_healer:bool = false
+
 func _ready():
 	super._ready()
 	
@@ -27,7 +31,7 @@ func _ready():
 	# Assign a random color
 	var rng = RandomNumberGenerator.new()
 	sprite_color = Color(rng.randf_range(0, 1), rng.randf_range(0, 1), rng.randf_range(0, 1))
-	get_node("CharacterBody2D/Sprite2D").modulate = sprite_color
+	#get_node("CharacterBody2D/Sprite2D").modulate = sprite_color
 	
 	# Assign a number, simple for debugging
 	get_node("CharacterBody2D/Label").text = str(id)
@@ -35,7 +39,7 @@ func _ready():
 	damage_buff_timer = Timer.new()
 	add_child(damage_buff_timer)
 	damage_buff_timer.autostart = false
-	damage_buff_timer.wait_time = 30
+	damage_buff_timer.wait_time = 10
 	damage_buff_timer.connect("timeout", self.reset_damage_buff_timer)
 
 # Starts the damage buff timer
@@ -85,6 +89,7 @@ func _physics_process(delta):
 
 # Sets a random tank class
 func setRandomTankClass():
+	is_tank = true
 	hitpoints = 30
 	max_hitpoints = 30
 	var dice = Dice.new()
@@ -98,6 +103,7 @@ func setRandomTankClass():
 
 # Sets a random damage class
 func setRandomDamageClass():
+	is_damage = true
 	hitpoints = 20
 	max_hitpoints = 20
 	var dice = Dice.new()
@@ -115,6 +121,7 @@ func setRandomDamageClass():
 		
 # Sets a random healer class
 func setRandomHealerClass():
+	is_healer = true
 	hitpoints = 10
 	max_hitpoints = 10
 	var dice = Dice.new()
