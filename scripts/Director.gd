@@ -131,6 +131,7 @@ func _ready():
 	damage_timer.wait_time = 15
 	damage_timer.connect("timeout", self.reset_damage_timer)
 	
+	
 # Main loop
 func _process(delta):
 	# Check for hero defeat
@@ -229,7 +230,9 @@ func _input(event):
 			if(company_state=="Idle"):
 				var start = Vector2(hero_manager.hero_list[0].getPosition()) / map.cell_size
 				var end = Vector2(get_global_mouse_position()) / map.cell_size
-				hero_manager.hero_list[0].move(map.find_path(start, end))
+				var path = map.find_path(start, end)
+				hero_manager.hero_list[0].move(path)
+				get_node("PathLine").update_line(path)
 	
 	if event is InputEventKey and event.is_released:
 		if event.keycode == KEY_1:
