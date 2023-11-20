@@ -297,6 +297,7 @@ func process_combat_queue():
 			# roll for hit and damage
 			var dice = Dice.new()
 			if(dice.roll(1, 20) > hitchance):
+				hero.state = "Combat"
 				var dmg = dice.roll(3, 6)
 				if(hero.damage_buff):
 					dmg = dice.roll(4, 6)

@@ -17,4 +17,6 @@ func make_ground():
 	type = "ground"
 	get_parent().make_ground(Vector2(mapx, mapy))
 	get_node("StaticBody2D/CollisionShape2D").disabled = true
+	get_node("StaticBody2D/Ground").visible = true
+	get_node("StaticBody2D/Wall").visible = false
 	#get_node("StaticBody2D/Sprite2D").modulate = Color(131/255.0, 121/255.0, 110/255.0)
