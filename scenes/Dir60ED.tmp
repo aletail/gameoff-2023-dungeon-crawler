@@ -1,17 +1,17 @@
-[gd_scene load_steps=5 format=3 uid="uid://bakaj75pvnpka"]
+[gd_scene load_steps=4 format=3 uid="uid://bakaj75pvnpka"]
 
 [ext_resource type="Script" path="res://scripts/director.gd" id="1_tminw"]
-[ext_resource type="PackedScene" uid="uid://cb4ymdmtgcpfx" path="res://scenes/Helpers/PathLine.tscn" id="2_pfwx0"]
 [ext_resource type="PackedScene" uid="uid://cfw0jrlssgtic" path="res://scenes/Interface/UI.tscn" id="2_xvcum"]
 [ext_resource type="PackedScene" uid="uid://w4glhgxfd0fb" path="res://scenes/Helpers/FramesPerSecond.tscn" id="3_g1t0m"]
 
 [node name="Director" type="Node2D"]
 script = ExtResource("1_tminw")
 
-[node name="Camera2D" type="Camera2D" parent="."]
-
-[node name="PathLine" parent="." instance=ExtResource("2_pfwx0")]
+[node name="Line2D" type="Line2D" parent="."]
 z_index = 10
+width = 1.0
+
+[node name="Camera2D" type="Camera2D" parent="."]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

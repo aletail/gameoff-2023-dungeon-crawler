@@ -46,10 +46,10 @@ func _ready():
 	damage_buff_timer.wait_time = 10
 	damage_buff_timer.connect("timeout", self.reset_damage_buff_timer)
 	
-	chat_bubble_container = get_node("CharacterBody2D/Sprite2D/ChatContainer")
+	chat_bubble_container = get_node("CharacterBody2D/AnimatedSprite2D/ChatContainer")
 	chat_bubble_container.visible = false
 	
-	chat_bubble = get_node("CharacterBody2D/Sprite2D/ChatContainer/RichTextLabel")
+	chat_bubble = get_node("CharacterBody2D/AnimatedSprite2D/ChatContainer/RichTextLabel")
 	
 	chat_bubble_timer = Timer.new()
 	add_child(chat_bubble_timer)
@@ -78,6 +78,16 @@ func start_damage_buff_timer():
 func reset_damage_buff_timer():
 	damage_buff = "Not Active"
 	
+	
+func _process(delta):
+	if state=="Idle" :
+		get_node("CharacterBody2D/AnimatedSprite2D").play("idle")
+	elif state=="Move":
+		get_node("CharacterBody2D/AnimatedSprite2D").play("move")
+	elif state=="Combat":
+		get_node("CharacterBody2D/AnimatedSprite2D").play("combat")
+	elif state=="Down":
+		get_node("CharacterBody2D/AnimatedSprite2D").play("down")
 # 	
 func _physics_process(delta):
 	if(state=="Move"):

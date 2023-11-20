@@ -31,7 +31,8 @@ func _ready():
 		for y in grid_size.y:
 			var t = tscene.instantiate();
 			#t.get_node("StaticBody2D/Sprite2D").modulate = Color(131/255.0, 121/255.0, 110/255.0)
-			t.get_node("StaticBody2D/Sprite2D").visible = true
+			#t.get_node("StaticBody2D/Wall").visible = false
+			t.get_node("StaticBody2D/Ground").visible = true
 			t.get_node("StaticBody2D/CollisionShape2D").disabled = true
 			t.mapx = x
 			t.mapy = y
@@ -56,8 +57,9 @@ func _ready():
 		for y in grid_size.y:
 			if tile_list_array[x][y].type == "roof":
 				tile_list_array[x][y].get_node("StaticBody2D/CollisionShape2D").disabled = false
-				#tile_list_array[x][y].get_node("StaticBody2D/Sprite2D").modulate = Color(67/255.0, 62/255.0, 56/255.0)
-				tile_list_array[x][y].get_node("StaticBody2D/Sprite2D").visible = false
+				tile_list_array[x][y].get_node("StaticBody2D/Ground").modulate = Color(67/255.0, 62/255.0, 56/255.0)
+				#tile_list_array[x][y].get_node("StaticBody2D/Wall").visible = true
+				#tile_list_array[x][y].get_node("StaticBody2D/Ground").visible = false
 				astar_grid.set_point_solid(Vector2(tile_list_array[x][y].mapx, tile_list_array[x][y].mapy), true)
 
 # 
