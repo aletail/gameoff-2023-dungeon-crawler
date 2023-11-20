@@ -20,6 +20,7 @@ var spawn_monster_timer:Timer
 var spawn_horde_position:Vector2
 var boss_spawn_flag = false
 var boss_object:Monster
+var spawn_boss_timer:Timer
 
 var track_current_cave = 1
 var cave_active = false
@@ -89,6 +90,13 @@ func _ready():
 	spawn_monster_timer.autostart = false
 	spawn_monster_timer.wait_time = 0.5
 	spawn_monster_timer.connect("timeout", self.spawn_horde_monster)
+	
+	# Spawns the boss after so many seconds
+	spawn_boss_timer = Timer.new()
+	add_child(spawn_boss_timer)
+	spawn_boss_timer.autostart = false
+	spawn_boss_timer.wait_time = 5
+	spawn_boss_timer.connect("timeout", self.spawn_boss_monster)
 	
 	# Connect update combat signal
 	update_combat.connect(_on_update_combat)
@@ -196,12 +204,10 @@ func _process(delta):
 			cave_active = true
 			if track_current_cave == map.cave_object_list[map.cave_object_list.size()-1].id:
 				# spawn the boss
-				spawn_horde_position = map.get_offscreen_spawn_point(hero_manager.company_position, track_current_cave)
-				boss_spawn_flag = true
-				boss_object = monster_manager.spawn_boss(spawn_horde_position, hero_manager.company_position)
-				ui.boss_health_bar.visible = true
-				print("Spawning Boss")
+				hero_manager.hero_list[0].show_chat_bubble("I hear something big!")
+				spawn_boss_timer.start()
 			else:
+				hero_manager.hero_list[0].show_chat_bubble("Get ready to fight!")
 				# start horde spawn
 				var rng = RandomNumberGenerator.new()
 				horde_size = rng.randi_range(20, 100)
@@ -238,6 +244,15 @@ func _input(event):
 #			spawn_horde_position = map.get_offscreen_spawn_point(hero_manager.company_position)
 #			spawn_horde_timer.start()
 			
+			
+func spawn_boss_monster():
+	spawn_horde_position = map.get_offscreen_spawn_point(hero_manager.company_position, track_current_cave)
+	boss_spawn_flag = true
+	boss_object = monster_manager.spawn_boss(spawn_horde_position, hero_manager.company_position)
+	ui.boss_health_bar.visible = true
+	print("Spawning Boss")
+	spawn_boss_timer.stop()
+	
 # Spawns multiple monsters at once				
 func spawn_horde():
 	spawn_horde_position = map.get_offscreen_spawn_point(hero_manager.company_position, track_current_cave)
@@ -336,12 +351,14 @@ func update_company_state():
 	if(company_state=="Combat"):
 		# The only way out of the combat state is if there are no monsters left in current spawn
 		if(monster_manager.monster_list.size()==0):
+			hero_manager.hero_list[0].show_chat_bubble("A good fight!")
 			map.reset_tile_weights()
 			# Reset Ability Checks
 			hero_tank_defeat_count = 0
 			hero_damage_defeat_count = 0
 			hero_healer_defeat_count = 0
 			for h in hero_manager.hero_list.size():
+				#hero_manager.hero_list[h].speed = 64
 				# Raise any downed heroes
 				if(hero_manager.hero_list[h].state=="Down"):
 					hero_manager.hero_list[h].hitpoints = hero_manager.hero_list[h].max_hitpoints
@@ -352,6 +369,7 @@ func update_company_state():
 			company_state = "Formation"
 			cave_active = false
 	elif(company_state=="Formation"):
+		hero_manager.hero_list[0].show_chat_bubble("Lets keep moving!")
 		# To exit the formation state, all heros should be idle
 		var moving = false
 		for h in hero_manager.hero_list:
@@ -364,6 +382,7 @@ func update_company_state():
 			company_state = "Combat"
 			# When entering combat, store the hero position (to be used later after battle) and clear their move list
 			for h in hero_manager.hero_list.size():
+				#hero_manager.hero_list[h].speed = 32
 				hero_manager.hero_last_position[h] = hero_manager.hero_list[h].getPosition()
 				hero_manager.hero_list[h].move_list = []
 

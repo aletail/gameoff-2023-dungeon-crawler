@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://s1d8urq3yqyo"]
+[gd_scene load_steps=5 format=3 uid="uid://s1d8urq3yqyo"]
 
 [ext_resource type="Script" path="res://scripts/Heros/hero.gd" id="1_45uwc"]
 [ext_resource type="Texture2D" uid="uid://cgqlp1huerfn5" path="res://sprites/tank.png" id="2_cwj4e"]
+[ext_resource type="Texture2D" uid="uid://qfsev0arhwab" path="res://sprites/chat-bubble.png" id="3_20kn4"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8du5x"]
 radius = 7.01783
@@ -15,6 +16,30 @@ collision_mask = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
 texture = ExtResource("2_cwj4e")
+
+[node name="ChatContainer" type="BoxContainer" parent="CharacterBody2D/Sprite2D"]
+offset_left = -52.0
+offset_top = -59.0
+offset_right = 53.0
+offset_bottom = -37.0
+vertical = true
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D/Sprite2D/ChatContainer"]
+z_index = 5
+position = Vector2(-17, -13)
+scale = Vector2(0.675, 0.41)
+texture = ExtResource("3_20kn4")
+centered = false
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CharacterBody2D/Sprite2D/ChatContainer"]
+z_index = 5
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 10
+bbcode_enabled = true
+text = "Something's coming!"
+fit_content = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
 shape = SubResource("CircleShape2D_8du5x")

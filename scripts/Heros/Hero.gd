@@ -9,6 +9,10 @@ var is_tank:bool = false
 var is_damage:bool = false
 var is_healer:bool = false
 
+var chat_bubble_container:BoxContainer
+var chat_bubble:RichTextLabel
+var chat_bubble_timer:Timer
+
 func _ready():
 	super._ready()
 	
@@ -41,7 +45,30 @@ func _ready():
 	damage_buff_timer.autostart = false
 	damage_buff_timer.wait_time = 10
 	damage_buff_timer.connect("timeout", self.reset_damage_buff_timer)
+	
+	chat_bubble_container = get_node("CharacterBody2D/Sprite2D/ChatContainer")
+	chat_bubble_container.visible = false
+	
+	chat_bubble = get_node("CharacterBody2D/Sprite2D/ChatContainer/RichTextLabel")
+	
+	chat_bubble_timer = Timer.new()
+	add_child(chat_bubble_timer)
+	chat_bubble_timer.autostart = true
+	chat_bubble_timer.wait_time = 5
+	chat_bubble_timer.connect("timeout", self.hide_chat_bubble)
 
+
+func show_chat_bubble(t:String):
+	chat_bubble_container.visible = true
+	chat_bubble.text = t
+	chat_bubble_timer.start()
+	
+func hide_chat_bubble():
+	chat_bubble_container.visible = false
+	chat_bubble.text = ""
+	chat_bubble_timer.stop()
+	
+	
 # Starts the damage buff timer
 func start_damage_buff_timer():
 	damage_buff = "Init"
