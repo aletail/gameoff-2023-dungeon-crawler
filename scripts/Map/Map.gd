@@ -25,18 +25,21 @@ func _ready():
 	initialize_grid()
 	
 	# Create tiles
-	var tscene = load("res://Scenes/Tile/Tile.tscn")
+	var tscene = load("res://Scenes/Map/Tile.tscn")
 	for x in grid_size.x:
 		tile_list_array.append([])
 		for y in grid_size.y:
 			var t = tscene.instantiate();
 			#t.get_node("StaticBody2D/Sprite2D").modulate = Color(131/255.0, 121/255.0, 110/255.0)
 			#t.get_node("StaticBody2D/Wall").visible = false
-			t.get_node("StaticBody2D/Ground").visible = true
+			#t.get_node("StaticBody2D/Ground").visible = true
 			t.get_node("StaticBody2D/CollisionShape2D").disabled = true
 			t.mapx = x
 			t.mapy = y
 			t.position = convert_to_global(Vector2(x, y))
+			var rng = RandomNumberGenerator.new()
+			rng.randomize()
+			t.get_node("StaticBody2D/AnimatedSprite2D").set_frame(rng.randi_range(1, 8))
 			add_child(t)
 			tile_list_array[x].append(0)
 			tile_list_array[x][y] = t
@@ -57,7 +60,8 @@ func _ready():
 		for y in grid_size.y:
 			if tile_list_array[x][y].type == "roof":
 				tile_list_array[x][y].get_node("StaticBody2D/CollisionShape2D").disabled = false
-				tile_list_array[x][y].get_node("StaticBody2D/Ground").modulate = Color(67/255.0, 62/255.0, 56/255.0)
+				tile_list_array[x][y].get_node("StaticBody2D/AnimatedSprite2D").set_frame(0)
+				#tile_list_array[x][y].get_node("StaticBody2D/Ground").modulate = Color(67/255.0, 62/255.0, 56/255.0)
 				#tile_list_array[x][y].get_node("StaticBody2D/Wall").visible = true
 				#tile_list_array[x][y].get_node("StaticBody2D/Ground").visible = false
 				astar_grid.set_point_solid(Vector2(tile_list_array[x][y].mapx, tile_list_array[x][y].mapy), true)
@@ -213,7 +217,7 @@ func get_caves():
 		for tile in cave:
 			tile_list_array[tile.x][tile.y].type = "ground"
 			tile_list_array[tile.x][tile.y].cave_id = count
-			tile_list_array[tile.x][tile.y].get_node("Label").text = str(count)
+			#tile_list_array[tile.x][tile.y].get_node("Label").text = str(count)
 			
 #
 func flood_fill(tilex, tiley):

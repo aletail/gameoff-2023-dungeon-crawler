@@ -175,11 +175,15 @@ func _process(delta):
 			ui.update_health_bar_boss(boss_object.hitpoints, boss_object.max_hitpoints, Color(0.75, 0, 0))
 	#
 	if(company_state=="Combat"):
-		camera.zoom = camera.zoom.lerp(Vector2(1.75, 1.75), delta * 1.25)
+		camera.zoom = camera.zoom.lerp(Vector2(2, 2), delta * 1.25)
 		if(hero_manager.company_position):
 			camera.position = camera.position.lerp(hero_manager.company_position, delta * 5)
 	else:
-		camera.zoom = camera.zoom.lerp(Vector2(1, 1), delta * 1.25)
+		if track_current_cave == 0:
+			camera.zoom = camera.zoom.lerp(Vector2(2.5, 2.5), delta * 1.25)
+		else:
+			camera.zoom = camera.zoom.lerp(Vector2(1, 1), delta * 1.25)
+			
 		camera.position = camera.position.lerp(hero_manager.hero_list[0].getPosition(), delta * 5)
 		
 	# Map - update tile weights
@@ -200,15 +204,15 @@ func _process(delta):
 	
 	if hero_manager.company_cave_id != track_current_cave && !cave_active:
 		if hero_manager.company_cave_id != null and hero_manager.company_cave_id != 0:
-			print("Cave: "+str(hero_manager.company_cave_id))
+			#print("Cave: "+str(hero_manager.company_cave_id))
 			track_current_cave = hero_manager.company_cave_id
 			cave_active = true
 			if track_current_cave == map.cave_object_list[map.cave_object_list.size()-1].id:
 				# spawn the boss
-				hero_manager.hero_list[0].show_chat_bubble("I hear something big!")
+				hero_manager.get_hero_chat("Boss Battle")
 				spawn_boss_timer.start()
 			else:
-				hero_manager.hero_list[0].show_chat_bubble("Get ready to fight!")
+				hero_manager.get_hero_chat("Horde Battle")
 				# start horde spawn
 				var rng = RandomNumberGenerator.new()
 				horde_size = rng.randi_range(20, 100)
@@ -217,6 +221,9 @@ func _process(delta):
 				print("Wait time: " + str(spawn_horde_timer.wait_time))
 				print("----------")
 				spawn_horde_timer.start()
+		#else:
+			#print("Entering Tunnel: "+str(hero_manager.company_cave_id))
+			
 	
 	# Update UI Timers
 	ui.update_taunt_timer(taunt_timer.time_left)
@@ -253,7 +260,7 @@ func spawn_boss_monster():
 	boss_spawn_flag = true
 	boss_object = monster_manager.spawn_boss(spawn_horde_position, hero_manager.company_position)
 	ui.boss_health_bar.visible = true
-	print("Spawning Boss")
+	#print("Spawning Boss")
 	spawn_boss_timer.stop()
 	
 # Spawns multiple monsters at once				
@@ -268,8 +275,8 @@ func spawn_horde_monster():
 		if spawn_horde_position:
 			monster_manager.spawn_monster(spawn_horde_position, hero_manager.company_position)
 			monster_manager.spawn_monster(spawn_horde_position, hero_manager.company_position)
-		else:
-			print("No spawn position found")
+		#else:
+			#print("No spawn position found")
 		spawn_horde_count+=2
 	else:
 		spawn_horde_count = 0
@@ -314,6 +321,7 @@ func process_combat_queue():
 			
 		if monster.hitpoints<=0:
 			monster.state = "Dead"
+			monster.dead_removal_timer.start()
 			#print("Monster - Dead")
 		elif monster.combat_cooldown=="Ready":
 			# Check monster target is set to the hero in the queue, if not then there is an active taunt debuff
@@ -331,11 +339,11 @@ func process_combat_queue():
 						dmg = dice.roll(1, 8)
 					else:
 						dmg = dice.roll(1, 4)
-					print("Monster - Hit for "+ str(dmg) + " damage")
+					#print("Monster - Hit for "+ str(dmg) + " damage")
 					hero.hitpoints = hero.hitpoints - dmg
 				else:
 					pass
-					print("Monster - miss")
+					#print("Monster - miss")
 				# set combat state to cooldown
 				monster.set_combat_cooldown_state("Cooldown")
 			else:
@@ -355,7 +363,7 @@ func update_company_state():
 	if(company_state=="Combat"):
 		# The only way out of the combat state is if there are no monsters left in current spawn
 		if(monster_manager.monster_list.size()==0):
-			hero_manager.hero_list[0].show_chat_bubble("A good fight!")
+			#hero_manager.hero_list[0].show_chat_bubble("A good fight!")
 			map.reset_tile_weights()
 			# Reset Ability Checks
 			hero_tank_defeat_count = 0
@@ -373,17 +381,18 @@ func update_company_state():
 			company_state = "Formation"
 			cave_active = false
 	elif(company_state=="Formation"):
-		hero_manager.hero_list[0].show_chat_bubble("Lets keep moving!")
 		# To exit the formation state, all heros should be idle
 		var moving = false
 		for h in hero_manager.hero_list:
 			if(h.state == "Move"):
 				moving = true
 		if(!moving):
+			hero_manager.get_hero_chat("After Battle")
 			company_state = "Idle"
 	else:
 		if(monster_manager.monster_list.size()>0):
 			company_state = "Combat"
+			hero_manager.get_hero_chat("Before Battle")
 			# When entering combat, store the hero position (to be used later after battle) and clear their move list
 			for h in hero_manager.hero_list.size():
 				#hero_manager.hero_list[h].speed = 32
@@ -393,8 +402,14 @@ func update_company_state():
 # Remove dead monsters from lists, combat queue
 func cleanup_monsters():
 	for m in monster_manager.monster_list:
-		if(m.state=="Dead"):
-			#print("Dead Monster Found" + str(Monsters.size()))
+		if m.is_boss and m.state == "Dead":
+			for h in hero_manager.hero_list:
+				if(h.target==m):
+					h.target=null
+			combat_queue.erase(m.id)
+			monster_manager.monster_list.erase(m)
+		elif m.state=="Remove":
+			print("Dead Monster Found - " + str(monster_manager.monster_list.size()))
 			for h in hero_manager.hero_list:
 				if(h.target==m):
 					h.target=null

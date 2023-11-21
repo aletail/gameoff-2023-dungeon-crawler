@@ -5,6 +5,9 @@ var taunt_debuff:String
 var taunt_debuff_timer:Timer
 var taunt_target = null
 
+# Dead timer
+var dead_removal_timer:Timer
+
 # Flag to specify if this monster is a boss monster
 var is_boss:bool = false
 
@@ -30,7 +33,19 @@ func _ready():
 	taunt_debuff_timer.autostart = false
 	taunt_debuff_timer.wait_time = 10
 	taunt_debuff_timer.connect("timeout", self.reset_taunt_debuff_timer)
+	
+	dead_removal_timer = Timer.new()
+	add_child(dead_removal_timer)
+	dead_removal_timer.autostart = true
+	dead_removal_timer.wait_time = 2
+	dead_removal_timer.connect("timeout", self.set_state_to_remove)
 
+#
+func set_state_to_remove():
+	if !is_boss:
+		set_state("Remove")
+	dead_removal_timer.stop()
+	
 # Starts the taunt debuff timer
 func start_taunt_debuff_timer():
 	taunt_debuff = "Init"
@@ -67,4 +82,4 @@ func _physics_process(delta):
 			move_list.clear()
 			state = "Idle"
 	elif(state=="Dead"):
-		visible = false
+		get_node("CharacterBody2D/CollisionShape2D").disabled = true

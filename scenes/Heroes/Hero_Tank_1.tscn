@@ -1,0 +1,110 @@
+[gd_scene load_steps=15 format=3 uid="uid://s1d8urq3yqyo"]
+
+[ext_resource type="Script" path="res://scripts/Heroes/hero.gd" id="1_kp26v"]
+[ext_resource type="Texture2D" uid="uid://boi2k8inr85uh" path="res://sprites/hero-tank-animated/combat/knight_f_hit_anim_f0.png" id="2_x43a4"]
+[ext_resource type="Texture2D" uid="uid://co0tgeclvt51" path="res://sprites/hero-tank-animated/dead/knight_f_idle_anim_f0.png" id="3_egclo"]
+[ext_resource type="Texture2D" uid="uid://dc4a3agywroyn" path="res://sprites/hero-tank-animated/idle/knight_f_idle_anim_f0.png" id="4_mhevx"]
+[ext_resource type="Texture2D" uid="uid://docgats4s2vjh" path="res://sprites/hero-tank-animated/idle/knight_f_idle_anim_f1.png" id="5_c2hlp"]
+[ext_resource type="Texture2D" uid="uid://dbebcqkr7xsba" path="res://sprites/hero-tank-animated/idle/knight_f_idle_anim_f2.png" id="6_v6twf"]
+[ext_resource type="Texture2D" uid="uid://dijapcyikvdis" path="res://sprites/hero-tank-animated/idle/knight_f_idle_anim_f3.png" id="7_ld02b"]
+[ext_resource type="Texture2D" uid="uid://ch1unxem4cg2u" path="res://sprites/hero-tank-animated/move/knight_f_run_anim_f0.png" id="8_vtj1h"]
+[ext_resource type="Texture2D" uid="uid://bm5ugrs57rgve" path="res://sprites/hero-tank-animated/move/knight_f_run_anim_f1.png" id="9_avx13"]
+[ext_resource type="Texture2D" uid="uid://bh6rjq0tgvl1u" path="res://sprites/hero-tank-animated/move/knight_f_run_anim_f2.png" id="10_x5egb"]
+[ext_resource type="Texture2D" uid="uid://1nlamji84klq" path="res://sprites/hero-tank-animated/move/knight_f_run_anim_f3.png" id="11_7qja0"]
+[ext_resource type="Texture2D" uid="uid://qfsev0arhwab" path="res://sprites/chat-bubble.png" id="12_sfoqh"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1hbcn"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_x43a4")
+}],
+"loop": true,
+"name": &"combat",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_egclo")
+}],
+"loop": true,
+"name": &"down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_mhevx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_c2hlp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_v6twf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_ld02b")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_vtj1h")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_avx13")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_x5egb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_7qja0")
+}],
+"loop": true,
+"name": &"move",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8du5x"]
+radius = 7.01783
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_kp26v")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D"]
+position = Vector2(0, -5)
+sprite_frames = SubResource("SpriteFrames_1hbcn")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="ChatContainer" type="Node2D" parent="CharacterBody2D/AnimatedSprite2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D/AnimatedSprite2D/ChatContainer"]
+z_index = 5
+position = Vector2(-68, -54)
+scale = Vector2(0.675, 0.41)
+texture = ExtResource("12_sfoqh")
+centered = false
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CharacterBody2D/AnimatedSprite2D/ChatContainer"]
+z_index = 5
+offset_left = -60.0
+offset_top = -48.0
+offset_right = 59.0
+offset_bottom = -20.0
+size_flags_horizontal = 3
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 10
+bbcode_enabled = true
+text = "Lets see what
+Two lines look like!"
+fit_content = true
+metadata/_edit_use_anchors_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+shape = SubResource("CircleShape2D_8du5x")

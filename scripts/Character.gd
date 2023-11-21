@@ -28,7 +28,17 @@ func _ready():
 	combat_global_timer.autostart = false
 	combat_global_timer.wait_time = attack_speed
 	combat_global_timer.connect("timeout", self.reset_combat_global_timer)
-
+	
+func _process(delta):
+	if state=="Idle" :
+		get_node("CharacterBody2D/AnimatedSprite2D").play("idle")
+	elif state=="Move":
+		get_node("CharacterBody2D/AnimatedSprite2D").play("move")
+	elif state=="Combat":
+		get_node("CharacterBody2D/AnimatedSprite2D").play("combat")
+	elif state=="Down" or state=="Dead":
+		get_node("CharacterBody2D/AnimatedSprite2D").play("down")
+		
 # Reset the combat timer
 func reset_combat_global_timer():
 	combat_cooldown = "Ready"
@@ -60,5 +70,5 @@ func set_state(s:String):
 
 # Updates the sprite color
 func update_color(color:Color):
-	get_node("CharacterBody2D/Sprite2D").modulate = color
+	#get_node("CharacterBody2D/Sprite2D").modulate = color
 	sprite_color = color

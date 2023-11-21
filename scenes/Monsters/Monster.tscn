@@ -1,0 +1,94 @@
+[gd_scene load_steps=14 format=3 uid="uid://c1fkn2onlk5d7"]
+
+[ext_resource type="Script" path="res://scripts/Monsters/monster.gd" id="1_hcejd"]
+[ext_resource type="Texture2D" uid="uid://btb487yvb60v4" path="res://sprites/monster/combat/orc_warrior_run_anim_f0.png" id="2_2jib7"]
+[ext_resource type="Texture2D" uid="uid://c1gagkr0p2g6d" path="res://sprites/monster-boss/dead/orc_warrior_idle_anim_f0.png" id="3_41vux"]
+[ext_resource type="Texture2D" uid="uid://bhd7py3pe8tdk" path="res://sprites/monster/idle/orc_warrior_idle_anim_f0.png" id="4_fa6kh"]
+[ext_resource type="Texture2D" uid="uid://dt3wdcon441gh" path="res://sprites/monster/idle/orc_warrior_idle_anim_f1.png" id="5_fyfw5"]
+[ext_resource type="Texture2D" uid="uid://dnykr04l4wkvr" path="res://sprites/monster/idle/orc_warrior_idle_anim_f2.png" id="6_f3pgw"]
+[ext_resource type="Texture2D" uid="uid://bfadhwvqxyfnk" path="res://sprites/monster/idle/orc_warrior_idle_anim_f3.png" id="7_tk5s1"]
+[ext_resource type="Texture2D" uid="uid://wventomxpix8" path="res://sprites/monster/move/orc_warrior_run_anim_f0.png" id="8_sburp"]
+[ext_resource type="Texture2D" uid="uid://bsa6utca6xj6x" path="res://sprites/monster/move/orc_warrior_run_anim_f1.png" id="9_ghf8d"]
+[ext_resource type="Texture2D" uid="uid://702kda0ojeaq" path="res://sprites/monster/move/orc_warrior_run_anim_f2.png" id="10_uobmy"]
+[ext_resource type="Texture2D" uid="uid://bvyq6ykskib0k" path="res://sprites/monster/move/orc_warrior_run_anim_f3.png" id="11_iublp"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_b6v4n"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_2jib7")
+}],
+"loop": true,
+"name": &"combat",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_41vux")
+}],
+"loop": true,
+"name": &"down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_fa6kh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_fyfw5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_f3pgw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_tk5s1")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_sburp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_ghf8d")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_uobmy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_iublp")
+}],
+"loop": true,
+"name": &"move",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2saen"]
+radius = 5.0
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_hcejd")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+collision_layer = 2
+collision_mask = 2
+floor_stop_on_slope = false
+floor_constant_speed = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D"]
+sprite_frames = SubResource("SpriteFrames_b6v4n")
+animation = &"move"
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+shape = SubResource("CircleShape2D_2saen")
+
+[node name="Label" type="Label" parent="CharacterBody2D"]
+offset_left = -6.0
+offset_top = -15.0091
+offset_right = 6.0
+offset_bottom = 10.9909
+scale = Vector2(1, 0.990991)
+horizontal_alignment = 1

@@ -17,10 +17,11 @@ func _process(delta):
 	pass
 
 func update_line(points):
-	$Line2D.points = points
-	path_line_timer.start()
-	get_node("TargetMarker").visible=true
-	get_node("TargetMarker").position = points[points.size()-1]
+	if points:
+		$Line2D.points = points
+		path_line_timer.start()
+		get_node("TargetMarker").visible=true
+		get_node("TargetMarker").position = points[points.size()-1]
 	
 func clear_path_line():
 	path_line_timer.stop()
