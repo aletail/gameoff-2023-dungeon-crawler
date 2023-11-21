@@ -1,0 +1,23 @@
+[gd_scene load_steps=6 format=3 uid="uid://bakaj75pvnpka"]
+
+[ext_resource type="Script" path="res://scripts/director.gd" id="1_tminw"]
+[ext_resource type="PackedScene" uid="uid://cb4ymdmtgcpfx" path="res://scenes/Helpers/PathLine.tscn" id="2_pfwx0"]
+[ext_resource type="PackedScene" uid="uid://cfw0jrlssgtic" path="res://scenes/Interface/UI.tscn" id="2_xvcum"]
+[ext_resource type="PackedScene" uid="uid://w4glhgxfd0fb" path="res://scenes/Helpers/FramesPerSecond.tscn" id="3_g1t0m"]
+[ext_resource type="PackedScene" uid="uid://b63xwd3x750ec" path="res://scenes/Helpers/LoadingHelper.tscn" id="5_4ffgo"]
+
+[node name="Director" type="Node2D"]
+script = ExtResource("1_tminw")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="PathLine" parent="." instance=ExtResource("2_pfwx0")]
+z_index = 10
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" parent="CanvasLayer" instance=ExtResource("2_xvcum")]
+
+[node name="FPSLabel" parent="CanvasLayer" instance=ExtResource("3_g1t0m")]
+
+[node name="LoadingHelper" parent="CanvasLayer" instance=ExtResource("5_4ffgo")]

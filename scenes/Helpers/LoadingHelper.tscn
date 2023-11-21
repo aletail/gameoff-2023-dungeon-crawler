@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://ogop6jcatf5l"]
+
+[ext_resource type="Script" path="res://scenes/Helpers/LoadingHelper.gd" id="1_5g1hh"]
+
+[node name="LoadingScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_5g1hh")
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+layout_mode = 0
+offset_left = 380.0
+offset_top = 310.0
+offset_right = 779.0
+offset_bottom = 337.0
