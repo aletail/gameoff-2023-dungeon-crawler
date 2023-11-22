@@ -18,3 +18,6 @@ z_index = 10
 [node name="Control" parent="CanvasLayer" instance=ExtResource("2_xvcum")]
 
 [node name="FPSLabel" parent="CanvasLayer" instance=ExtResource("3_g1t0m")]
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.4, 0.4, 0.4, 1)

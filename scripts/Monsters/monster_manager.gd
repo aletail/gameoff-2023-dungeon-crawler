@@ -89,6 +89,7 @@ func update_monster_paths():
 					monster.setPosition(start)
 				
 			var end = Vector2(monster.target) / map.cell_size
+			start = map.check_if_valid(start)
 			monster.move(map.find_path(start, end))
 			
 		update_monster_paths_count+=1

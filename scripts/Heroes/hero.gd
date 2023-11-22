@@ -46,10 +46,10 @@ func _ready():
 	damage_buff_timer.wait_time = 10
 	damage_buff_timer.connect("timeout", self.reset_damage_buff_timer)
 	
-	chat_bubble_container = get_node("CharacterBody2D/AnimatedSprite2D/ChatContainer")
+	chat_bubble_container = get_node("CharacterBody2D/ChatContainer")
 	chat_bubble_container.visible = false
 	
-	chat_bubble = get_node("CharacterBody2D/AnimatedSprite2D/ChatContainer/RichTextLabel")
+	chat_bubble = get_node("CharacterBody2D/ChatContainer/RichTextLabel")
 	
 	chat_bubble_timer = Timer.new()
 	add_child(chat_bubble_timer)

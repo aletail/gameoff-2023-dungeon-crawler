@@ -30,6 +30,7 @@ func _ready():
 		tile_list_array.append([])
 		for y in grid_size.y:
 			var t = tscene.instantiate();
+			t.get_node("StaticBody2D/LightOccluder2D").set_occluder_light_mask(2)
 			t.get_node("StaticBody2D/CollisionShape2D").disabled = true
 			t.mapx = x
 			t.mapy = y
@@ -52,6 +53,7 @@ func _ready():
 	for x in grid_size.x:
 		for y in grid_size.y:
 			if tile_list_array[x][y].type == "roof":
+				tile_list_array[x][y].get_node("StaticBody2D/LightOccluder2D").set_occluder_light_mask(1)
 				tile_list_array[x][y].get_node("StaticBody2D/CollisionShape2D").disabled = false
 				tile_list_array[x][y].get_node("StaticBody2D/AnimatedSprite2D").set_frame(0)
 				astar_grid.set_point_solid(Vector2(tile_list_array[x][y].mapx, tile_list_array[x][y].mapy), true)
@@ -378,6 +380,22 @@ func process_tile_weight_updates():
 		astar_grid.set_point_weight_scale(t[0], current_weight)
 		
 	tile_weight_update.clear()
+	
+func check_if_valid(start):
+	if astar_grid.is_in_boundsv(start):
+		return start
+	else:
+		# return closest tile
+		print("Out of bounds, finding closest tile")
+		var last_d = 10000000
+		var tmp_start = null
+		for x in grid_size.x:
+			for y in grid_size.y:
+				var d = start.distance_to(Vector2(tile_list_array[x][y].mapx, tile_list_array[x][y].mapy))
+				if d < last_d:
+					last_d = d
+					tmp_start = Vector2(tile_list_array[x][y].mapx, tile_list_array[x][y].mapy)
+		return tmp_start
 	
 # Find Path
 func find_path(start, end):

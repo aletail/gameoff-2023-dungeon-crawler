@@ -58,6 +58,10 @@ var hero_tank_defeat_count = 0
 var hero_damage_defeat_count = 0
 var hero_healer_defeat_count = 0
 
+# UI
+var quit_to_main_menu_button_on_boss_defeat
+var quit_to_main_menu_button_on_hero_defeat
+
 func _ready():
 	ui = get_node("CanvasLayer/Control")
 	camera = get_node("Camera2D")
@@ -137,6 +141,15 @@ func _ready():
 	damage_timer.wait_time = 15
 	damage_timer.connect("timeout", self.reset_damage_timer)
 	
+	# Quit to main menu button
+	# On Boss Defeat
+	quit_to_main_menu_button_on_boss_defeat = get_node("CanvasLayer/Control/GameOverPanel/QuitMainMenuButton")
+	quit_to_main_menu_button_on_boss_defeat.pressed.connect(self.quit_to_main_menu)
+	
+	# On Hero Defeat
+	quit_to_main_menu_button_on_hero_defeat = get_node("CanvasLayer/Control/GameOverPanel_Defeat/QuitMainMenuButton")
+	quit_to_main_menu_button_on_hero_defeat.pressed.connect(self.quit_to_main_menu)
+	
 	
 # Main loop
 func _process(delta):
@@ -177,6 +190,10 @@ func _process(delta):
 	ui.update_damage_timer(damage_timer.time_left, DAMAGE_COOLDOWN)
 	ui.update_heal_timer(heal_timer.time_left, HEAL_COOLDOWN)
 
+func quit_to_main_menu():
+	var loading_scene_path = "res://scenes/MainMenu.tscn"
+	get_tree().change_scene_to_file(loading_scene_path)
+	
 # Spawns enemy/boss when entering a cave
 func spawn_enemy_check():
 	# If we enter a different cave then we are already in and a current cave is not active
@@ -223,7 +240,7 @@ func check_boss():
 	if(boss_spawn_flag):
 		if(monster_manager.monster_list.size()==0):
 			# GAME OVER!
-			get_tree().paused = true
+			#get_tree().paused = true
 			ui.game_over_panel.visible = true
 		else:
 			ui.update_health_bar_boss(boss_object.hitpoints, boss_object.max_hitpoints, Color(0.75, 0, 0))
@@ -256,22 +273,22 @@ func check_heroes():
 	# If all five heroes are down its game over
 	if hero_defeat_count==5:
 		# GAME OVER!
-		get_tree().paused = true
+		#get_tree().paused = true
 		ui.game_over_panel_defeat.visible = true
 	
 	# Check for abilities that need disabled
 	if hero_tank_defeat_count == 2:
-		button_taunt.visible = false
+		button_taunt.get_parent().visible = false
 	else:
-		button_taunt.visible = true
+		button_taunt.get_parent().visible = true
 	if hero_damage_defeat_count == 2:
-		button_damage.visible = false
+		button_damage.get_parent().visible = false
 	else:
-		button_damage.visible = true
+		button_damage.get_parent().visible = true
 	if hero_healer_defeat_count == 1:
-		button_heal.visible = false
+		button_heal.get_parent().visible = false
 	else:
-		button_heal.visible = true
+		button_heal.get_parent().visible = true
 	
 # Handle Input here
 func _input(event):

@@ -144,12 +144,15 @@ func update_hero_paths(company_state:String):
 			var hero = hero_list[update_hero_path_count]
 			if hero.target!=null:
 				var d = hero.getPosition().distance_to(hero.target.getPosition())
-				if d < 100 and d > 5:
+				#if d < 100 and d > 5:
+				if d < 100:
 					var start = Vector2(hero.getPosition()) / map.cell_size
+					start = map.check_if_valid(start)
 					var end = Vector2(hero.target.getPosition()) / map.cell_size
 					hero.move(map.find_path(start, end))
 				else:
 					var start = Vector2(hero.getPosition()) / map.cell_size
+					start = map.check_if_valid(start)
 					var end = Vector2(hero_last_position[hero.id]) / map.cell_size
 					hero.move(map.find_path(start, end))
 				update_hero_path_count+=1

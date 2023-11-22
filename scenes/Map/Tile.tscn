@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://jpunjyidmrdq"]
+[gd_scene load_steps=13 format=3 uid="uid://jpunjyidmrdq"]
 
 [ext_resource type="Script" path="res://scripts/Map/tile.gd" id="1_byepj"]
 [ext_resource type="Texture2D" uid="uid://b1dpfqoylafxu" path="res://sprites/tiles/floor_1.png" id="4_5rumg"]
@@ -48,6 +48,9 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_ttt70"]
+polygon = PackedVector2Array(-8, -8, -8, 8, 8, 8, 8, -8)
+
 [node name="Tile" type="Node2D"]
 script = ExtResource("1_byepj")
 
@@ -60,6 +63,9 @@ disabled = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="StaticBody2D"]
 sprite_frames = SubResource("SpriteFrames_mssfd")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="StaticBody2D"]
+occluder = SubResource("OccluderPolygon2D_ttt70")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
 scale = Vector2(0.8, 0.8)

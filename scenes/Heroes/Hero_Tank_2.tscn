@@ -82,16 +82,21 @@ sprite_frames = SubResource("SpriteFrames_1hbcn")
 animation = &"move"
 autoplay = "idle"
 
-[node name="ChatContainer" type="Node2D" parent="CharacterBody2D/AnimatedSprite2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+shape = SubResource("CircleShape2D_8du5x")
 
-[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D/AnimatedSprite2D/ChatContainer"]
+[node name="ChatContainer" type="Node2D" parent="CharacterBody2D"]
+top_level = true
+position = Vector2(0, -3)
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D/ChatContainer"]
 z_index = 5
 position = Vector2(-68, -54)
 scale = Vector2(0.675, 0.41)
 texture = ExtResource("12_pljjt")
 centered = false
 
-[node name="RichTextLabel" type="RichTextLabel" parent="CharacterBody2D/AnimatedSprite2D/ChatContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="CharacterBody2D/ChatContainer"]
 z_index = 5
 offset_left = -60.0
 offset_top = -48.0
@@ -105,6 +110,3 @@ text = "Lets see what
 Two lines look like!"
 fit_content = true
 metadata/_edit_use_anchors_ = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
-shape = SubResource("CircleShape2D_8du5x")

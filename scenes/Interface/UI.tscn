@@ -94,7 +94,7 @@ vertical = true
 
 [node name="RaceClass" type="Label" parent="BoxContainer/HeroInformation/Hero_0"]
 layout_mode = 2
-text = "Buddy Silvio"
+text = "Benito Sourtoes"
 horizontal_alignment = 1
 
 [node name="Healthbar" type="TextureProgressBar" parent="BoxContainer/HeroInformation/Hero_0"]
@@ -109,7 +109,7 @@ vertical = true
 
 [node name="RaceClass" type="Label" parent="BoxContainer/HeroInformation/Hero_1"]
 layout_mode = 2
-text = "Hans Broadiron"
+text = "Buddy Broadirons"
 horizontal_alignment = 1
 
 [node name="Healthbar" type="TextureProgressBar" parent="BoxContainer/HeroInformation/Hero_1"]
@@ -124,7 +124,7 @@ vertical = true
 
 [node name="RaceClass" type="Label" parent="BoxContainer/HeroInformation/Hero_2"]
 layout_mode = 2
-text = "Tobo Legrunner"
+text = "Noriah Whisperpants"
 horizontal_alignment = 1
 
 [node name="Healthbar" type="TextureProgressBar" parent="BoxContainer/HeroInformation/Hero_2"]
@@ -139,7 +139,7 @@ vertical = true
 
 [node name="RaceClass" type="Label" parent="BoxContainer/HeroInformation/Hero_3"]
 layout_mode = 2
-text = "Hoff Silientfoot"
+text = "Goldy Silientfoot"
 horizontal_alignment = 1
 
 [node name="Healthbar" type="TextureProgressBar" parent="BoxContainer/HeroInformation/Hero_3"]
@@ -166,9 +166,9 @@ texture_progress = ExtResource("3_frqgj")
 [node name="GameOverPanel" type="Panel" parent="."]
 layout_mode = 0
 offset_left = 251.0
-offset_top = 117.0
+offset_top = 10.0
 offset_right = 935.0
-offset_bottom = 401.0
+offset_bottom = 266.0
 
 [node name="RichTextLabel" type="RichTextLabel" parent="GameOverPanel"]
 layout_mode = 2
@@ -176,12 +176,12 @@ offset_top = 63.0
 offset_right = 684.0
 offset_bottom = 207.0
 bbcode_enabled = true
-text = "[p align=center][font_size=30px]Congratulations! 
-You have slayed the _________![/font_size][/p]
+text = "[p align=center][font_size=30px]Congratulations,
+You have slayed the <blank>![/font_size][/p]
 
 [p align=center]On to the next adventure![/p]"
 
-[node name="Button" type="Button" parent="GameOverPanel"]
+[node name="QuitMainMenuButton" type="Button" parent="GameOverPanel"]
 layout_mode = 0
 offset_left = 262.0
 offset_top = 207.0
@@ -192,26 +192,24 @@ text = "Quit to main menu"
 [node name="GameOverPanel_Defeat" type="Panel" parent="."]
 layout_mode = 0
 offset_left = 251.0
-offset_top = 117.0
+offset_top = 10.0
 offset_right = 935.0
-offset_bottom = 401.0
+offset_bottom = 217.0
 
 [node name="RichTextLabel" type="RichTextLabel" parent="GameOverPanel_Defeat"]
 layout_mode = 2
 offset_top = 63.0
 offset_right = 684.0
-offset_bottom = 207.0
+offset_bottom = 154.0
 bbcode_enabled = true
-text = "[p align=center][font_size=30px]You have been defeated![/font_size][/p]
+text = "[p align=center][font_size=30px]You have been defeated![/font_size][/p]"
 
-[p align=center]Again[/p]"
-
-[node name="Button" type="Button" parent="GameOverPanel_Defeat"]
+[node name="QuitMainMenuButton" type="Button" parent="GameOverPanel_Defeat"]
 layout_mode = 0
 offset_left = 262.0
-offset_top = 207.0
+offset_top = 154.0
 offset_right = 417.0
-offset_bottom = 238.0
+offset_bottom = 185.0
 text = "Quit to main menu"
 
 [node name="BossHealthBarContainer" type="BoxContainer" parent="."]

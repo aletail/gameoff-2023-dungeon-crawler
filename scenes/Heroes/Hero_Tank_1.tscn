@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://s1d8urq3yqyo"]
+[gd_scene load_steps=17 format=3 uid="uid://s1d8urq3yqyo"]
 
 [ext_resource type="Script" path="res://scripts/Heroes/hero.gd" id="1_kp26v"]
 [ext_resource type="Texture2D" uid="uid://boi2k8inr85uh" path="res://sprites/hero-tank-animated/combat/knight_f_hit_anim_f0.png" id="2_x43a4"]
@@ -12,6 +12,8 @@
 [ext_resource type="Texture2D" uid="uid://bh6rjq0tgvl1u" path="res://sprites/hero-tank-animated/move/knight_f_run_anim_f2.png" id="10_x5egb"]
 [ext_resource type="Texture2D" uid="uid://1nlamji84klq" path="res://sprites/hero-tank-animated/move/knight_f_run_anim_f3.png" id="11_7qja0"]
 [ext_resource type="Texture2D" uid="uid://qfsev0arhwab" path="res://sprites/chat-bubble.png" id="12_sfoqh"]
+[ext_resource type="Texture2D" uid="uid://7cqlydo73a3s" path="res://sprites/light-circle.png" id="13_mgdp5"]
+[ext_resource type="Script" path="res://scenes/Heroes/torch.gd" id="14_bc5r3"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_1hbcn"]
 animations = [{
@@ -82,16 +84,27 @@ sprite_frames = SubResource("SpriteFrames_1hbcn")
 animation = &"idle"
 autoplay = "idle"
 
-[node name="ChatContainer" type="Node2D" parent="CharacterBody2D/AnimatedSprite2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+shape = SubResource("CircleShape2D_8du5x")
 
-[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D/AnimatedSprite2D/ChatContainer"]
+[node name="PointLight2D" type="PointLight2D" parent="CharacterBody2D"]
+color = Color(0.964706, 0.815686, 0.627451, 1)
+shadow_enabled = true
+shadow_color = Color(0, 0, 0, 1)
+texture = ExtResource("13_mgdp5")
+script = ExtResource("14_bc5r3")
+
+[node name="ChatContainer" type="Node2D" parent="CharacterBody2D"]
+position = Vector2(0, -5)
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D/ChatContainer"]
 z_index = 5
 position = Vector2(-68, -54)
 scale = Vector2(0.675, 0.41)
 texture = ExtResource("12_sfoqh")
 centered = false
 
-[node name="RichTextLabel" type="RichTextLabel" parent="CharacterBody2D/AnimatedSprite2D/ChatContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="CharacterBody2D/ChatContainer"]
 z_index = 5
 offset_left = -60.0
 offset_top = -48.0
@@ -105,6 +118,3 @@ text = "Lets see what
 Two lines look like!"
 fit_content = true
 metadata/_edit_use_anchors_ = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
-shape = SubResource("CircleShape2D_8du5x")
