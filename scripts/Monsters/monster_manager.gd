@@ -42,22 +42,22 @@ func update_monster_targets(HeroList:Array, company_position:Vector2, tank_list:
 			if m.taunt_debuff=="Active":
 				# Do nothing until the debuff expires
 				pass
+			# Initialize the taunt debuff
 			elif(m.taunt_debuff=="Init"):
 				if(m.target_object):
 					if m.target_object.is_tank:
 						pass
 					else:
 						m.taunt_debuff = "Active"
-						var d = Dice.new()
-						#TODO Check for down states
-						if d.roll(1,2)==1:
-							m.target = tank_list[0].getPosition()
-							m.target_object = tank_list[0]
-							m.update_color(tank_list[0].sprite_color)
-						else:
-							m.target = tank_list[1].getPosition()
-							m.target_object = tank_list[1]
-							m.update_color(tank_list[1].sprite_color)
+						var active_tanks = []
+						if tank_list[0].state!="Down":
+							active_tanks.push_back(tank_list[0])
+						if tank_list[1].state!="Down":
+							active_tanks.push_back(tank_list[1])
+						randomize()
+						var rand_index = randi() % active_tanks.size()
+						m.target = active_tanks[rand_index].getPosition()
+						m.target_object = active_tanks[rand_index]
 						get_parent().remove_from_combat_queue.push_back(str(m.id))
 			else:
 				var last_d = 10000000
@@ -74,10 +74,6 @@ func update_monster_targets(HeroList:Array, company_position:Vector2, tank_list:
 				if(tmp_target==null):
 					tmp_target = company_position
 				elif(tmp_target != m.target):
-	#				if(hero_target):
-	#					m.update_color(hero_target.sprite_color)
-	#				else:
-	#					m.update_color(Color(1,1,1))
 					m.target = tmp_target
 					m.target_object = hero_target
 	
@@ -87,17 +83,10 @@ func update_monster_paths():
 		var monster = monster_list[update_monster_paths_count]
 		var start = Vector2(monster.getPosition()) / map.cell_size
 		if monster.state != "Dead":
-			# TODO: Check if monster is stuck on a solid tile
 			if(!monster.is_boss):
 				if map.get_tile_type(start.x, start.y)=="roof":
-					#print("UPDATING START TILE")
 					start = map.get_offscreen_spawn_point(monster.getPosition(), get_parent().track_current_cave)
 					monster.setPosition(start)
-					#var newstart = map.get_nearby_ground(start.x, start.y)
-					#start = Vector2(newstart.mapx, newstart.mapy)
-					#start = get_parent().spawn_horde_position
-					#monster.setPosition(start)
-					#monster.state = "Dead"
 				
 			var end = Vector2(monster.target) / map.cell_size
 			monster.move(map.find_path(start, end))
@@ -106,6 +95,13 @@ func update_monster_paths():
 	else:
 		update_monster_paths_count = 0
 
+# Check for dead state, checks all monsters for a dead state, if so the remove timer is started
+func check_for_dead_state():
+	for m in monster_list:
+		if(m.hitpoints <= 0 and m.state != "Remove" and m.state != "Dead"):
+			m.state = "Dead"
+			m.dead_removal_timer.start()
+			
 # Starts the taunt debuff timer
 func add_taunt_debuff():
 	for m in monster_list:

@@ -113,11 +113,12 @@ func spawn_company(spawnposition:Vector2):
 # Loop through heroes, assign targets based on distance
 func update_hero_targets(monster_list:Array):
 	for h in hero_list:
-		if h.target==null:
+		# TODO Check target as well?
+		if h.target_object==null:
 			var last_d = 10000000
 			var tmp_target = null
 			for m in monster_list:
-				if h.state != "Down" and m.state != "Dead":
+				if m.state != "Dead":
 					var d = h.getPosition().distance_to(m.getPosition())
 					if d < last_d:
 						last_d = d
@@ -132,7 +133,8 @@ func update_hero_paths(company_state:String):
 			var hero = hero_list[update_hero_path_count]
 			if hero.target!=null:
 				var d = hero.getPosition().distance_to(hero.target.getPosition())
-				if d < 100:
+				print("Distance "+str(d)+" - "+hero.target.state+" - "+str(hero.target.hitpoints))
+				if d < 100 and d > 5:
 					var start = Vector2(hero.getPosition()) / map.cell_size
 					var end = Vector2(hero.target.getPosition()) / map.cell_size
 					hero.move(map.find_path(start, end))
@@ -143,15 +145,24 @@ func update_hero_paths(company_state:String):
 				update_hero_path_count+=1
 		else:
 			update_hero_path_count = 0		
-			
+	
+# Check for down state, any hero whose hitpoints less then zero get marked to down state
+func check_for_down_state():
+	for h in hero_list:
+		if(h.hitpoints <= 0 and h.state != "Down"):
+			h.state = "Down"
+	
+# Heal company to max hitpoints				
 func heal_company():
 	for h in hero_list:
 		h.hitpoints = h.max_hitpoints
-		
+	
+# Adds the damage buff to all heroes	
 func add_damage_buff():
 	for h in hero_list:
 		h.start_damage_buff_timer()
-		
+
+# Returns random chatter based on even passed in		
 func get_hero_chat(event:String):
 	var rng = RandomNumberGenerator.new()
 	randomize()
@@ -162,7 +173,7 @@ func get_hero_chat(event:String):
 	]
 	var horde_battle_chats = [
 		"Did you hear that?",
-		"I heard something that way...",
+		"I heard something this way...",
 		"Something smells rotten here..."
 	]
 	var before_battle_chats = [
@@ -175,6 +186,10 @@ func get_hero_chat(event:String):
 		"Form up!",
 		"Lets keep moving!"
 	]
+	var enter_cave = [
+		"Let's see where this goes...",
+		"Whats down here..."
+	]
 	if event == "Boss Battle":
 		hero_list[0].show_chat_bubble(boss_battle_chats[rng.randi_range(0, boss_battle_chats.size()-1)])
 	elif event == "Horde Battle":
@@ -183,4 +198,6 @@ func get_hero_chat(event:String):
 		hero_list[0].show_chat_bubble(before_battle_chats[rng.randi_range(0, before_battle_chats.size()-1)])
 	elif event == "After Battle":
 		hero_list[0].show_chat_bubble(after_battle_chats[rng.randi_range(0, after_battle_chats.size()-1)])
+	elif event == "Enter Cave":
+		hero_list[0].show_chat_bubble(enter_cave[rng.randi_range(0, enter_cave.size()-1)])
 	

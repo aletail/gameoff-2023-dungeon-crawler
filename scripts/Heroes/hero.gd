@@ -96,6 +96,7 @@ func _physics_process(delta):
 			# Check distance to our point, if less then one - remove point from list and update any followers
 			var d = character_body.position.distance_to(point);
 			if d < 1:
+				#character_body.position = point
 				get_parent().map.subtract_tile_weight(point)
 				# If we have a follower, send point to them and trigger a move state
 				if(follower && (get_parent().get_parent().company_state!="Combat" && get_parent().get_parent().company_state!="Formation")):

@@ -54,10 +54,12 @@ func start_taunt_debuff_timer():
 # Reset the taunt debuff flag
 func reset_taunt_debuff_timer():
 	taunt_debuff = "Not Active"
-	
+	taunt_debuff_timer.stop()
 #
 func _physics_process(delta):
-	if(state=="Move"):
+	if(state=="Dead" || state=="Remove"):
+		get_node("CharacterBody2D/CollisionShape2D").disabled = true
+	elif(state=="Move"):
 		if(move_list.size() > 0):
 			var point = move_list[0]
 			# While moving through this tile, increase the weight of the tile
@@ -81,5 +83,3 @@ func _physics_process(delta):
 		else:
 			move_list.clear()
 			state = "Idle"
-	elif(state=="Dead"):
-		get_node("CharacterBody2D/CollisionShape2D").disabled = true

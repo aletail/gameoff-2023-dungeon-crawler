@@ -22,6 +22,7 @@ var boss_spawn_flag = false
 var boss_object:Monster
 var spawn_boss_timer:Timer
 
+# Track the current cave the company is in
 var track_current_cave = 1
 var cave_active = false
 
@@ -31,11 +32,6 @@ var combat_queue:Dictionary = {}
 var remove_from_combat_queue:Array = []
 # Updates the combat queue with character and monster pair
 signal update_combat(character, monster)
-	
-# Ability Checks
-var hero_tank_defeat_count = 0
-var hero_damage_defeat_count = 0
-var hero_healer_defeat_count = 0
 
 # Taunt Ability
 var button_taunt
@@ -51,6 +47,11 @@ var heal_timer:Timer
 var button_damage
 var damage_cooldown_state:String = "Ready"
 var damage_timer:Timer
+
+# Reset Ability Checks
+var hero_tank_defeat_count = 0
+var hero_damage_defeat_count = 0
+var hero_healer_defeat_count = 0
 
 func _ready():
 	ui = get_node("CanvasLayer/Control")
@@ -134,17 +135,124 @@ func _ready():
 	
 # Main loop
 func _process(delta):
+	# Check for end of game, disable abilities based on heroes who are down
+	check_heroes()
+	
+	# Check boss, if spawned, ends game if boss is defeated
+	check_boss()
+	
+	# Update camera based on situation
+	update_camera(delta)
+		
+	# Map - update tile weights
+	map.process_tile_weight_updates()
+		
+	# Update Hero and Monster targets
+	hero_manager.update_hero_targets(monster_manager.monster_list)
+	monster_manager.update_monster_targets(hero_manager.hero_list, hero_manager.company_position, hero_manager.tank_list)
+		
+	# Process the combat queue
+	process_combat_queue()
+	
+	# Check for dead/down states for heroes and monsters
+	monster_manager.check_for_dead_state()
+	hero_manager.check_for_down_state()
+	
+	# Monitor company state
+	update_company_state()
+	
+	# Monster Cleanup
+	cleanup_monsters()
+	
+	# Check if enemies should be spawned
+	spawn_enemy_check()
+	
+	# Update UI Timers
+	ui.update_taunt_timer(taunt_timer.time_left)
+	ui.update_damage_timer(damage_timer.time_left)
+	ui.update_heal_timer(heal_timer.time_left)
+
+# Spawns enemy/boss when entering a cave
+func spawn_enemy_check():
+	# If we enter a different cave then we are already in and a current cave is not active
+	if hero_manager.company_cave_id != track_current_cave && !cave_active:
+		if hero_manager.company_cave_id != null and hero_manager.company_cave_id != 0:
+			track_current_cave = hero_manager.company_cave_id
+			cave_active = true
+			if track_current_cave == map.cave_object_list[map.cave_object_list.size()-1].id:
+				# spawn the boss
+				hero_manager.get_hero_chat("Boss Battle")
+				spawn_boss_timer.start()
+			else:
+				# start horde spawn
+				hero_manager.get_hero_chat("Horde Battle")
+				var rng = RandomNumberGenerator.new()
+				horde_size = rng.randi_range(20, 100)
+				spawn_horde_timer.wait_time = rng.randf_range(5.0, 10.0)
+				spawn_horde_timer.start()
+#				print("Horde Size: " + str(horde_size))
+#				print("Wait time: " + str(spawn_horde_timer.wait_time))
+#				print("----------")
+#		elif hero_manager.company_cave_id==null:
+#			track_current_cave = hero_manager.company_cave_id
+#			hero_manager.get_hero_chat("Enter Cave")
+
+
+# Update camera
+func update_camera(delta):
+	if(company_state=="Combat"):
+		camera.zoom = camera.zoom.lerp(Vector2(2, 2), delta * 1.25)
+		if(hero_manager.company_position):
+			camera.position = camera.position.lerp(hero_manager.company_position, delta * 5)
+	else:
+		if track_current_cave == 0:
+			camera.zoom = camera.zoom.lerp(Vector2(2.5, 2.5), delta * 1.25)
+		else:
+			camera.zoom = camera.zoom.lerp(Vector2(1, 1), delta * 1.25)
+			
+		camera.position = camera.position.lerp(hero_manager.hero_list[0].getPosition(), delta * 5)
+	
+
+# Check for boss defeat, update health bar
+func check_boss():
+	if(boss_spawn_flag):
+		if(monster_manager.monster_list.size()==0):
+			# GAME OVER!
+			get_tree().paused = true
+			ui.game_over_panel.visible = true
+		else:
+			ui.update_health_bar_boss(boss_object.hitpoints, boss_object.max_hitpoints, Color(0.75, 0, 0))
+
+# Check for heroes down, update abilities based on who is down
+func check_heroes():
 	# Check for hero defeat
 	var hero_defeat_count = 0
-	for h in hero_manager.hero_list:
-		if h.state=="Down":
-			hero_defeat_count += 1
-			if h.is_tank and hero_tank_defeat_count<2:
-				hero_tank_defeat_count+=1
-			if h.is_damage and hero_healer_defeat_count<2:
-				hero_damage_defeat_count+=1
-			if h.is_healer and hero_healer_defeat_count==0:
-				hero_healer_defeat_count+=1
+	hero_tank_defeat_count = 0
+	hero_damage_defeat_count = 0
+	hero_healer_defeat_count = 0
+	
+	# Check all heroes for a down state
+	if hero_manager.hero_list[0].state == "Down":
+		hero_defeat_count += 1
+		hero_tank_defeat_count+=1
+	if hero_manager.hero_list[1].state == "Down":
+		hero_defeat_count += 1
+		hero_tank_defeat_count+=1
+	if hero_manager.hero_list[2].state == "Down":
+		hero_defeat_count += 1
+		hero_damage_defeat_count+=1
+	if hero_manager.hero_list[3].state == "Down":
+		hero_defeat_count += 1
+		hero_damage_defeat_count+=1
+	if hero_manager.hero_list[4].state == "Down":
+		hero_defeat_count += 1
+		hero_healer_defeat_count+=1
+			
+	# If all five heroes are down its game over
+	if hero_defeat_count==5:
+		# GAME OVER!
+		get_tree().paused = true
+		ui.game_over_panel_defeat.visible = true
 	
 	# Check for abilities that need disabled
 	if hero_tank_defeat_count == 2:
@@ -159,76 +267,6 @@ func _process(delta):
 		button_heal.visible = false
 	else:
 		button_heal.visible = true
-			
-	if hero_defeat_count==5:
-		# GAME OVER!
-		get_tree().paused = true
-		ui.game_over_panel_defeat.visible = true
-	
-	# Check for boss defeat
-	if(boss_spawn_flag):
-		if(monster_manager.monster_list.size()==0):
-			# GAME OVER!
-			get_tree().paused = true
-			ui.game_over_panel.visible = true
-		else:
-			ui.update_health_bar_boss(boss_object.hitpoints, boss_object.max_hitpoints, Color(0.75, 0, 0))
-	#
-	if(company_state=="Combat"):
-		camera.zoom = camera.zoom.lerp(Vector2(2, 2), delta * 1.25)
-		if(hero_manager.company_position):
-			camera.position = camera.position.lerp(hero_manager.company_position, delta * 5)
-	else:
-		if track_current_cave == 0:
-			camera.zoom = camera.zoom.lerp(Vector2(2.5, 2.5), delta * 1.25)
-		else:
-			camera.zoom = camera.zoom.lerp(Vector2(1, 1), delta * 1.25)
-			
-		camera.position = camera.position.lerp(hero_manager.hero_list[0].getPosition(), delta * 5)
-		
-	# Map - update tile weights
-	map.process_tile_weight_updates()
-		
-	# Update Hero and Monster targets
-	hero_manager.update_hero_targets(monster_manager.monster_list)
-	monster_manager.update_monster_targets(hero_manager.hero_list, hero_manager.company_position, hero_manager.tank_list)
-		
-	# Process the combat queue
-	process_combat_queue()
-	
-	# Monitor company state
-	update_company_state()
-	
-	# Monster Cleanup
-	cleanup_monsters()
-	
-	if hero_manager.company_cave_id != track_current_cave && !cave_active:
-		if hero_manager.company_cave_id != null and hero_manager.company_cave_id != 0:
-			#print("Cave: "+str(hero_manager.company_cave_id))
-			track_current_cave = hero_manager.company_cave_id
-			cave_active = true
-			if track_current_cave == map.cave_object_list[map.cave_object_list.size()-1].id:
-				# spawn the boss
-				hero_manager.get_hero_chat("Boss Battle")
-				spawn_boss_timer.start()
-			else:
-				hero_manager.get_hero_chat("Horde Battle")
-				# start horde spawn
-				var rng = RandomNumberGenerator.new()
-				horde_size = rng.randi_range(20, 100)
-				print("Horde Size: " + str(horde_size))
-				spawn_horde_timer.wait_time = rng.randf_range(5.0, 10.0)
-				print("Wait time: " + str(spawn_horde_timer.wait_time))
-				print("----------")
-				spawn_horde_timer.start()
-		#else:
-			#print("Entering Tunnel: "+str(hero_manager.company_cave_id))
-			
-	
-	# Update UI Timers
-	ui.update_taunt_timer(taunt_timer.time_left)
-	ui.update_damage_timer(damage_timer.time_left)
-	ui.update_heal_timer(heal_timer.time_left)
 	
 # Handle Input here
 func _input(event):
@@ -248,19 +286,14 @@ func _input(event):
 			self.damage_button_pressed()
 		if event.keycode == KEY_3:
 			self.heal_button_pressed()
-#		if event.keycode == KEY_SPACE:
-#			spawn_horde_position = map.get_offscreen_spawn_point(hero_manager.company_position)
-#			monster_manager.spawn_boss(spawn_horde_position, hero_manager.company_position)
-#			spawn_horde_position = map.get_offscreen_spawn_point(hero_manager.company_position)
-#			spawn_horde_timer.start()
 			
-			
+
+# Spawn Boss Monster		
 func spawn_boss_monster():
 	spawn_horde_position = map.get_offscreen_spawn_point(hero_manager.company_position, track_current_cave)
 	boss_spawn_flag = true
 	boss_object = monster_manager.spawn_boss(spawn_horde_position, hero_manager.company_position)
 	ui.boss_health_bar.visible = true
-	#print("Spawning Boss")
 	spawn_boss_timer.stop()
 	
 # Spawns multiple monsters at once				
@@ -268,7 +301,8 @@ func spawn_horde():
 	spawn_horde_position = map.get_offscreen_spawn_point(hero_manager.company_position, track_current_cave)
 	spawn_horde_timer.stop()
 	spawn_monster_timer.start()	
-			
+
+# Spawns monster for a horder, on a timer		
 func spawn_horde_monster():
 	if(spawn_horde_count < horde_size):
 		spawn_horde_position = map.get_offscreen_spawn_point(hero_manager.company_position, track_current_cave)
@@ -289,7 +323,7 @@ func update_paths():
 
 # Signal function - adds the character and monster to the combat queue
 func _on_update_combat(character, monster) -> void:
-	if(character.state!="Dead" || monster.state!="Dead"):
+	if(character.state!="Down" || monster.state!="Dead"):
 		combat_queue[str(monster.id)] = [character, monster]
 		
 # Process the combat queue
@@ -297,10 +331,9 @@ func process_combat_queue():
 	for pairid in combat_queue:
 		var hero = combat_queue[pairid][0]
 		var monster = combat_queue[pairid][1]
-		if hero.hitpoints<=0:
-			hero.state = "Down"
-			#print("Character - Dead")
-		elif hero.combat_cooldown=="Ready":
+		
+		# Hero turn
+		if hero.combat_cooldown=="Ready":
 			var hitchance = 10
 			if(hero.damage_buff):
 				hitchance = 0
@@ -313,17 +346,14 @@ func process_combat_queue():
 					dmg = dice.roll(4, 6)
 				#print("Character - Critical Hit for "+ str(dmg) + " damage")
 				monster.hitpoints = monster.hitpoints - dmg
-			else:
-				pass
+			#else:
+				#pass
 				#print("Character - miss")
 			# set combat state to cooldown
 			hero.set_combat_cooldown_state("Cooldown")
 			
-		if monster.hitpoints<=0:
-			monster.state = "Dead"
-			monster.dead_removal_timer.start()
-			#print("Monster - Dead")
-		elif monster.combat_cooldown=="Ready":
+		# Monster turn
+		if monster.combat_cooldown=="Ready":
 			# Check monster target is set to the hero in the queue, if not then there is an active taunt debuff
 			if(monster.target_object == hero):
 				# roll for hit and damage
@@ -332,7 +362,6 @@ func process_combat_queue():
 					var chance = 5
 				else:
 					var chance = 10
-						
 				if(dice.roll(1, 20) > 10):
 					var dmg = 0
 					if(monster.is_boss):
@@ -341,16 +370,16 @@ func process_combat_queue():
 						dmg = dice.roll(1, 4)
 					#print("Monster - Hit for "+ str(dmg) + " damage")
 					hero.hitpoints = hero.hitpoints - dmg
-				else:
-					pass
+				#else:
 					#print("Monster - miss")
 				# set combat state to cooldown
 				monster.set_combat_cooldown_state("Cooldown")
-			else:
-				pass
+			#else:
+				#pass
 				#print("Taunt Debuff")
 			
-		if hero.hitpoints<=0 || monster.hitpoints<=0:	
+		# If either are dead, remove from queue
+		if hero.hitpoints<=0 || monster.hitpoints<=0:
 			remove_from_combat_queue.push_back(str(monster.id))
 	
 	# Clear combat queue
@@ -363,17 +392,15 @@ func update_company_state():
 	if(company_state=="Combat"):
 		# The only way out of the combat state is if there are no monsters left in current spawn
 		if(monster_manager.monster_list.size()==0):
-			#hero_manager.hero_list[0].show_chat_bubble("A good fight!")
 			map.reset_tile_weights()
 			# Reset Ability Checks
 			hero_tank_defeat_count = 0
 			hero_damage_defeat_count = 0
 			hero_healer_defeat_count = 0
 			for h in hero_manager.hero_list.size():
-				#hero_manager.hero_list[h].speed = 64
 				# Raise any downed heroes
+				hero_manager.hero_list[h].hitpoints = hero_manager.hero_list[h].max_hitpoints
 				if(hero_manager.hero_list[h].state=="Down"):
-					hero_manager.hero_list[h].hitpoints = hero_manager.hero_list[h].max_hitpoints
 					hero_manager.hero_list[h].state = "Idle"
 				var start = Vector2(hero_manager.hero_list[h].getPosition()) / map.cell_size
 				var end = Vector2(hero_manager.hero_last_position[h]) / map.cell_size
@@ -406,63 +433,72 @@ func cleanup_monsters():
 			for h in hero_manager.hero_list:
 				if(h.target==m):
 					h.target=null
+					h.target_object=null
 			combat_queue.erase(m.id)
 			monster_manager.monster_list.erase(m)
 		elif m.state=="Remove":
-			print("Dead Monster Found - " + str(monster_manager.monster_list.size()))
 			for h in hero_manager.hero_list:
 				if(h.target==m):
 					h.target=null
+					h.target_object=null
 			combat_queue.erase(m.id)
 			monster_manager.monster_list.erase(m)
 			m.queue_free()
 
-# Taunt Ability
+# Taunt Ability button pressed
 func taunt_button_pressed():
+	# Check if cooldown is ready and that atleast 1 tank is still standing
 	if taunt_cooldown_state == "Ready" and hero_tank_defeat_count != 2:
 		button_taunt.disabled = true
 		set_taunt_cooldown_state("Cooldown")
 		monster_manager.add_taunt_debuff()
-
+		
+# Reset the taunt timer, enables the taunt button
 func reset_taunt_timer():
 	taunt_cooldown_state = "Ready"
 	button_taunt.disabled = false
 	taunt_timer.stop()
-	
+
+# Set taunt cooldown state, starts timer
 func set_taunt_cooldown_state(state):
 	if(state=="Cooldown"):
 		taunt_cooldown_state = state
 		taunt_timer.start()
 		
-# Heal Ability
+# Heal Ability button pressed
 func heal_button_pressed():
+	# Check if cooldown is ready and that one healer is standing
 	if heal_cooldown_state == "Ready" and hero_healer_defeat_count != 1:
 		button_heal.disabled = true
 		set_heal_cooldown_state("Cooldown")
 		hero_manager.heal_company()
 
+# Reset the heal timer, enables the heal button
 func reset_heal_timer():
 	heal_cooldown_state = "Ready"
 	button_heal.disabled = false
 	heal_timer.stop()
 	
+# Set heal cooldown state, starts timer
 func set_heal_cooldown_state(state):
 	if(state=="Cooldown"):
 		heal_cooldown_state = state
 		heal_timer.start()
 		
-# Damage Ability
+# Damage Ability button pressed
 func damage_button_pressed():
 	if damage_cooldown_state == "Ready" and hero_damage_defeat_count != 2:
 		button_damage.disabled = true
 		set_damage_cooldown_state("Cooldown")
 		hero_manager.add_damage_buff()
 
+# Reset the damage timer, enables the damage button
 func reset_damage_timer():
 	damage_cooldown_state = "Ready"
 	button_damage.disabled = false
 	damage_timer.stop()
 	
+# Set damage cooldown state, starts timer
 func set_damage_cooldown_state(state):
 	if(state=="Cooldown"):
 		damage_cooldown_state = state

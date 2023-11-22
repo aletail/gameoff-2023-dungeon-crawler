@@ -108,3 +108,12 @@ metadata/_edit_use_anchors_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
 shape = SubResource("CircleShape2D_8du5x")
+
+[node name="ProgressBar" type="ProgressBar" parent="CharacterBody2D"]
+z_index = 100
+offset_left = -14.0
+offset_top = 9.0
+offset_right = 14.0
+offset_bottom = 14.0
+value = 100.0
+show_percentage = false

@@ -48,10 +48,6 @@ func _ready():
 	get_caves()
 	connect_caves()
 	
-	#print(caves.size())
-	#for c in caves:
-		#pass
-	
 	# Update grid with solid positions
 	for x in grid_size.x:
 		for y in grid_size.y:
@@ -68,7 +64,6 @@ func get_spawn_point():
 				return tile_list_array[x][y].position
 
 # Returns the first off screen point found from inbound position
-#TODO - This will fail the farther the player gets to the right side of the map
 func get_offscreen_spawn_point(pos:Vector2, cave_id:int):
 	pos = Vector2(pos) / cell_size
 	
@@ -81,7 +76,8 @@ func get_offscreen_spawn_point(pos:Vector2, cave_id:int):
 	for tile in caves[cave_id-1]:
 		var d = pos.distance_to(tile_list_array[tile.x][tile.y].position)
 		if(d > 50):
-			print("Ideal Spawn")
+			#print("Ideal Spawn")
+			#print(tile_list_array[tile.x][tile.y].position)
 			return tile_list_array[tile.x][tile.y].position
 
 	
@@ -104,7 +100,7 @@ func get_offscreen_spawn_point(pos:Vector2, cave_id:int):
 	
 # Returns the type of tile, nothing if not found
 func get_tile_type(x:int, y:int):
-	if(x < grid_size.x && y < grid_size.y):
+	if(astar_grid.is_in_bounds(x, y)):
 		return tile_list_array[x][y].type
 	else:
 		return ""
@@ -211,11 +207,9 @@ func get_caves():
 		for tile in cave:
 			tile_list_array[tile.x][tile.y].type = "ground"
 			tile_list_array[tile.x][tile.y].cave_id = count
-			#tile_list_array[tile.x][tile.y].get_node("Label").text = str(count)
 			
 #
 func flood_fill(tilex, tiley):
-	
 	var cave = []
 	var to_fill = [Vector2(tilex, tiley)]
 	while to_fill:
@@ -316,10 +310,6 @@ func create_tunnel(point1, point2, cave):
 			drunk_y += dy
 			if tile_list_array[drunk_x][drunk_y].type == "roof":
 				tile_list_array[drunk_x][drunk_y].type = "ground"
-
-				# optional: make tunnel wider
-				#tile_list_array[drunk_x+1][drunk_y].type = "ground"
-				#tile_list_array[drunk_x+1][drunk_y+1].type = "ground"
 	
 	# Check if tunnel was created, if not use a simple path to forge a tunnel
 	if steps >= 500:
@@ -345,11 +335,6 @@ func initialize_grid():
 	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
 	astar_grid.default_estimate_heuristic = AStarGrid2D.HEURISTIC_OCTILE
 	astar_grid.update()
-
-func _draw():
-	pass
-	#draw_grid()
-	#fill_walls()
 	
 func draw_grid():
 	for x in grid_size.x + 1:
@@ -396,17 +381,14 @@ func process_tile_weight_updates():
 	
 # Find Path
 func find_path(start, end):
-	if !astar_grid.is_in_boundsv(start):
-		if(start.x < 0):
-			start.x = 0
-		elif(start.y >= grid_size.y):
-			start.y = grid_size.y-1
-		#print("Start is out of bounds: " + str(start))
-	var r = PackedVector2Array(astar_grid.get_point_path(start, end))
-	if(r):
-		return r
+	if astar_grid.is_in_boundsv(start) and astar_grid.is_in_boundsv(end):
+		var r = PackedVector2Array(astar_grid.get_point_path(start, end))
+		if(r):
+			return r
+		else:
+			#print("path not found")
+			return []
 	else:
-		#print("path not found")
 		return []
 	
 func get_tile(v:Vector2):

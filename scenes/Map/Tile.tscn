@@ -1,8 +1,6 @@
-[gd_scene load_steps=14 format=3 uid="uid://jpunjyidmrdq"]
+[gd_scene load_steps=12 format=3 uid="uid://jpunjyidmrdq"]
 
 [ext_resource type="Script" path="res://scripts/Map/tile.gd" id="1_byepj"]
-[ext_resource type="Texture2D" uid="uid://40j52rgjr6xi" path="res://sprites/tile-ground.png" id="2_7kp83"]
-[ext_resource type="Texture2D" uid="uid://b6tfbn13byicc" path="res://sprites/tile-wall.png" id="2_70nye"]
 [ext_resource type="Texture2D" uid="uid://b1dpfqoylafxu" path="res://sprites/tiles/floor_1.png" id="4_5rumg"]
 [ext_resource type="Texture2D" uid="uid://dq5xhm7otry6p" path="res://sprites/tiles/floor_2.png" id="5_rnlg0"]
 [ext_resource type="Texture2D" uid="uid://b8bclaiu488rr" path="res://sprites/tiles/floor_3.png" id="6_lnfmk"]
@@ -59,14 +57,6 @@ collision_mask = 0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 shape = SubResource("CircleShape2D_2a5kd")
 disabled = true
-
-[node name="Ground" type="Sprite2D" parent="StaticBody2D"]
-visible = false
-texture = ExtResource("2_7kp83")
-
-[node name="Wall" type="Sprite2D" parent="StaticBody2D"]
-visible = false
-texture = ExtResource("2_70nye")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="StaticBody2D"]
 sprite_frames = SubResource("SpriteFrames_mssfd")
