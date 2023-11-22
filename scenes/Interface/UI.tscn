@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://cfw0jrlssgtic"]
+[gd_scene load_steps=11 format=3 uid="uid://cfw0jrlssgtic"]
 
 [ext_resource type="Script" path="res://scenes/Interface/UI.gd" id="1_xcdvj"]
 [ext_resource type="Texture2D" uid="uid://crf1r5kn1urju" path="res://sprites/ui/progress-texture-back.png" id="2_2kldk"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://fxh44m18k0v4" path="res://sprites/ui/button-damage-disabled.png" id="6_tv4md"]
 [ext_resource type="Texture2D" uid="uid://dhbd68t7wh5ti" path="res://sprites/ui/button-heal.png" id="7_2oy0t"]
 [ext_resource type="Texture2D" uid="uid://cu7d5lygc4wjd" path="res://sprites/ui/button-heal-disabled.png" id="8_4nwk8"]
+[ext_resource type="Texture2D" uid="uid://qfsev0arhwab" path="res://sprites/chat-bubble.png" id="10_uysok"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -233,5 +234,54 @@ value = 100.0
 [node name="Label" type="Label" parent="BossHealthBarContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-text = "Boss Name"
+text = "Boss"
 horizontal_alignment = 1
+
+[node name="HordeHealthBarContainer" type="BoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 10.0
+offset_right = 150.0
+offset_bottom = 61.0
+grow_horizontal = 2
+alignment = 1
+vertical = true
+
+[node name="HealthBar" type="ProgressBar" parent="HordeHealthBarContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+value = 100.0
+
+[node name="Label" type="Label" parent="HordeHealthBarContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Horde"
+horizontal_alignment = 1
+
+[node name="ChatBubbleContainer" type="Node2D" parent="."]
+position = Vector2(0, -5)
+
+[node name="Sprite2D" type="Sprite2D" parent="ChatBubbleContainer"]
+z_index = 5
+position = Vector2(-68, -54)
+scale = Vector2(0.675, 0.41)
+texture = ExtResource("10_uysok")
+centered = false
+
+[node name="RichTextLabel" type="RichTextLabel" parent="ChatBubbleContainer"]
+z_index = 5
+offset_left = -60.0
+offset_top = -48.0
+offset_right = 59.0
+offset_bottom = -20.0
+size_flags_horizontal = 3
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 10
+bbcode_enabled = true
+text = "Lets see what
+Two lines look like!"
+fit_content = true
+metadata/_edit_use_anchors_ = true

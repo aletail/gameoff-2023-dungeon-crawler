@@ -14,6 +14,7 @@ var update_paths_timer:Timer
 
 # Horde settings, size, timer
 var horde_size:int = 20
+var horde_size_count:int = 0
 var spawn_horde_count:int = 0
 var spawn_horde_timer:Timer
 var spawn_monster_timer:Timer
@@ -150,6 +151,7 @@ func _ready():
 	quit_to_main_menu_button_on_hero_defeat = get_node("CanvasLayer/Control/GameOverPanel_Defeat/QuitMainMenuButton")
 	quit_to_main_menu_button_on_hero_defeat.pressed.connect(self.quit_to_main_menu)
 	
+	ui.show_chat_bubble("Game Start", hero_manager.hero_list[0])
 	
 # Main loop
 func _process(delta):
@@ -203,13 +205,14 @@ func spawn_enemy_check():
 			cave_active = true
 			if track_current_cave == map.cave_object_list[map.cave_object_list.size()-1].id:
 				# spawn the boss
-				hero_manager.get_hero_chat("Boss Battle")
+				ui.show_chat_bubble("Boss Battle", hero_manager.hero_list[0])
 				spawn_boss_timer.start()
 			else:
 				# start horde spawn
-				hero_manager.get_hero_chat("Horde Battle")
+				ui.show_chat_bubble("Horde Battle", hero_manager.hero_list[0])
 				var rng = RandomNumberGenerator.new()
 				horde_size = rng.randi_range(20, 100)
+				horde_size_count = horde_size
 				spawn_horde_timer.wait_time = rng.randf_range(5.0, 10.0)
 				spawn_horde_timer.start()
 #				print("Horde Size: " + str(horde_size))
@@ -323,6 +326,8 @@ func spawn_horde():
 	spawn_horde_position = map.get_offscreen_spawn_point(hero_manager.company_position, track_current_cave)
 	spawn_horde_timer.stop()
 	spawn_monster_timer.start()	
+	ui.update_health_bar_horde(horde_size - monster_manager.dead_state_count, horde_size, Color(0.75, 0, 0))
+	ui.horde_health_bar.visible = true
 
 # Spawns monster for a horder, on a timer		
 func spawn_horde_monster():
@@ -412,8 +417,10 @@ func process_combat_queue():
 # Monitors the state of the company, sets the company state accordingly
 func update_company_state():
 	if(company_state=="Combat"):
+		ui.update_health_bar_horde(horde_size - monster_manager.dead_state_count, horde_size, Color(0.75, 0, 0))
 		# The only way out of the combat state is if there are no monsters left in current spawn
 		if(monster_manager.monster_list.size()==0):
+			ui.horde_health_bar.visible=false
 			map.reset_tile_weights()
 			# Reset Ability Checks
 			hero_tank_defeat_count = 0
@@ -436,12 +443,12 @@ func update_company_state():
 			if(h.state == "Move"):
 				moving = true
 		if(!moving):
-			hero_manager.get_hero_chat("After Battle")
+			ui.show_chat_bubble("After Battle", hero_manager.hero_list[0])
 			company_state = "Idle"
 	else:
 		if(monster_manager.monster_list.size()>0):
 			company_state = "Combat"
-			hero_manager.get_hero_chat("Before Battle")
+			ui.show_chat_bubble("Before Battle", hero_manager.hero_list[0])
 			# When entering combat, store the hero position (to be used later after battle) and clear their move list
 			for h in hero_manager.hero_list.size():
 				#hero_manager.hero_list[h].speed = 32

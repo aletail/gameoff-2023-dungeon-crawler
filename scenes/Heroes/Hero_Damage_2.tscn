@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://ks8cpmyptll0"]
+[gd_scene load_steps=14 format=3 uid="uid://ks8cpmyptll0"]
 
 [ext_resource type="Script" path="res://scripts/Heroes/hero.gd" id="1_iknxt"]
 [ext_resource type="Texture2D" uid="uid://ci2fah7v8udke" path="res://sprites/hero-damage-2-animated/combat/elf_m_hit_anim_f0.png" id="2_x7b7w"]
@@ -11,7 +11,6 @@
 [ext_resource type="Texture2D" uid="uid://c7tdcjg113vf4" path="res://sprites/hero-damage-2-animated/move/elf_m_run_anim_f1.png" id="9_d56im"]
 [ext_resource type="Texture2D" uid="uid://duututb70smhr" path="res://sprites/hero-damage-2-animated/move/elf_m_run_anim_f2.png" id="10_u6ews"]
 [ext_resource type="Texture2D" uid="uid://5byoynewu8ux" path="res://sprites/hero-damage-2-animated/move/elf_m_run_anim_f3.png" id="11_vgild"]
-[ext_resource type="Texture2D" uid="uid://qfsev0arhwab" path="res://sprites/chat-bubble.png" id="12_ykb6m"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_1hbcn"]
 animations = [{
@@ -84,28 +83,3 @@ autoplay = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
 shape = SubResource("CircleShape2D_8du5x")
-
-[node name="ChatContainer" type="Node2D" parent="CharacterBody2D"]
-position = Vector2(0, -4)
-
-[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D/ChatContainer"]
-z_index = 5
-position = Vector2(-68, -54)
-scale = Vector2(0.675, 0.41)
-texture = ExtResource("12_ykb6m")
-centered = false
-
-[node name="RichTextLabel" type="RichTextLabel" parent="CharacterBody2D/ChatContainer"]
-z_index = 5
-offset_left = -60.0
-offset_top = -48.0
-offset_right = 59.0
-offset_bottom = -20.0
-size_flags_horizontal = 3
-theme_override_colors/default_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/normal_font_size = 10
-bbcode_enabled = true
-text = "Lets see what
-Two lines look like!"
-fit_content = true
-metadata/_edit_use_anchors_ = true

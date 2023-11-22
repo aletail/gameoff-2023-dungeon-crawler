@@ -7,6 +7,8 @@ var monster_list:Array = []
 
 var update_monster_paths_count:int = 0
 
+var dead_state_count:int = 0
+
 # Init
 func _init(_map:Map):
 	map = _map
@@ -46,6 +48,7 @@ func update_monster_targets(HeroList:Array, company_position:Vector2, tank_list:
 			elif(m.taunt_debuff=="Init"):
 				if(m.target_object):
 					if m.target_object.is_tank:
+						m.get_node("CharacterBody2D/TauntCircle").modulate = m.target_object.sprite_color
 						pass
 					else:
 						m.taunt_debuff = "Active"
@@ -59,6 +62,7 @@ func update_monster_targets(HeroList:Array, company_position:Vector2, tank_list:
 						m.target = active_tanks[rand_index].getPosition()
 						m.target_object = active_tanks[rand_index]
 						get_parent().remove_from_combat_queue.push_back(str(m.id))
+						m.get_node("CharacterBody2D/TauntCircle").modulate = m.target_object.sprite_color
 			else:
 				var last_d = 10000000
 				var tmp_target = null
@@ -98,10 +102,14 @@ func update_monster_paths():
 
 # Check for dead state, checks all monsters for a dead state, if so the remove timer is started
 func check_for_dead_state():
-	for m in monster_list:
-		if(m.hitpoints <= 0 and m.state != "Remove" and m.state != "Dead"):
-			m.state = "Dead"
-			m.dead_removal_timer.start()
+	if monster_list.size() > 0:
+		for m in monster_list:
+			if(m.hitpoints <= 0 and m.state != "Remove" and m.state != "Dead"):
+				m.state = "Dead"
+				dead_state_count+=1
+				m.dead_removal_timer.start()
+	else:
+		dead_state_count = 0
 			
 # Starts the taunt debuff timer
 func add_taunt_debuff():

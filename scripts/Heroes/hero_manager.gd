@@ -179,6 +179,10 @@ func add_damage_buff():
 func get_hero_chat(event:String):
 	var rng = RandomNumberGenerator.new()
 	randomize()
+	var game_start_chats = [
+		"I Hope you packed your sleeping bags",
+		"Lets proceed with caution...",
+	]
 	var boss_battle_chats = [
 		"Did you hear that? sounds large...",
 		"I hear something big...",
@@ -202,8 +206,10 @@ func get_hero_chat(event:String):
 	var enter_cave = [
 		"Let's see where this goes...",
 		"Whats down here..."
-	]
-	if event == "Boss Battle":
+	]	
+	if event == "Game Start":
+		hero_list[0].show_chat_bubble(game_start_chats[rng.randi_range(0, game_start_chats.size()-1)])
+	elif event == "Boss Battle":
 		hero_list[0].show_chat_bubble(boss_battle_chats[rng.randi_range(0, boss_battle_chats.size()-1)])
 	elif event == "Horde Battle":
 		hero_list[0].show_chat_bubble(horde_battle_chats[rng.randi_range(0, horde_battle_chats.size()-1)])

@@ -27,6 +27,7 @@ func _ready():
 	super._ready()
 	
 	add_to_group("Monsters")
+	get_node("CharacterBody2D/TauntCircle").visible = false
 	
 	taunt_debuff_timer = Timer.new()
 	add_child(taunt_debuff_timer)
@@ -50,11 +51,13 @@ func set_state_to_remove():
 func start_taunt_debuff_timer():
 	taunt_debuff = "Init"
 	taunt_debuff_timer.start()
+	get_node("CharacterBody2D/TauntCircle").visible = true
 
 # Reset the taunt debuff flag
 func reset_taunt_debuff_timer():
 	taunt_debuff = "Not Active"
 	taunt_debuff_timer.stop()
+	get_node("CharacterBody2D/TauntCircle").visible = false
 #
 func _physics_process(delta):
 	if(state=="Dead" || state=="Remove"):

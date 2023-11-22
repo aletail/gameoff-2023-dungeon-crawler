@@ -1,7 +1,8 @@
-[gd_scene load_steps=14 format=3 uid="uid://qxuqqc74d5ji"]
+[gd_scene load_steps=15 format=3 uid="uid://qxuqqc74d5ji"]
 
 [ext_resource type="Script" path="res://scripts/Monsters/monster.gd" id="1_ilnxa"]
 [ext_resource type="Texture2D" uid="uid://ooab5tke6wkh" path="res://sprites/monster-boss/combat/ogre_run_anim_f0.png" id="2_as2nt"]
+[ext_resource type="Texture2D" uid="uid://ctkraauxu5koy" path="res://sprites/taunt-circle.png" id="2_xjbey"]
 [ext_resource type="Texture2D" uid="uid://c1gagkr0p2g6d" path="res://sprites/monster-boss/dead/orc_warrior_idle_anim_f0.png" id="3_etg50"]
 [ext_resource type="Texture2D" uid="uid://wf8oob5gr3eb" path="res://sprites/monster-boss/idle/ogre_idle_anim_f0.png" id="4_mt2f7"]
 [ext_resource type="Texture2D" uid="uid://dajc018wtofis" path="res://sprites/monster-boss/idle/ogre_idle_anim_f1.png" id="5_exilc"]
@@ -76,11 +77,17 @@ collision_layer = 2
 floor_stop_on_slope = false
 floor_constant_speed = true
 
+[node name="TauntCircle" type="Sprite2D" parent="CharacterBody2D"]
+show_behind_parent = true
+position = Vector2(0, 28)
+scale = Vector2(1.75, 1.75)
+texture = ExtResource("2_xjbey")
+
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D"]
 position = Vector2(0, -10)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_slm8a")
-animation = &"down"
+animation = &"idle"
 autoplay = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]

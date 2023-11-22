@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://413mywiwhjlc"]
 
 [ext_resource type="Script" path="res://scenes/MainMenu.gd" id="1_3dgbg"]
-[ext_resource type="Texture2D" uid="uid://c882rnqwj1qf" path="res://sprites/logo.png" id="2_tiq1v"]
+[ext_resource type="Texture2D" uid="uid://b0qgqrgwpdsdp" path="res://sprites/slay-the-blank-logo.png" id="2_ply6p"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -31,5 +31,5 @@ text = "Start Game"
 
 [node name="Sprite2D" type="Sprite2D" parent="CenterContainer"]
 position = Vector2(323, 194)
-texture = ExtResource("2_tiq1v")
+texture = ExtResource("2_ply6p")
 centered = false
