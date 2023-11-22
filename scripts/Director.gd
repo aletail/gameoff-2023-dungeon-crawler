@@ -33,6 +33,11 @@ var remove_from_combat_queue:Array = []
 # Updates the combat queue with character and monster pair
 signal update_combat(character, monster)
 
+# Ability Cooldown 
+const TAUNT_COOLDOWN = 13
+const DAMAGE_COOLDOWN = 13
+const HEAL_COOLDOWN = 13
+
 # Taunt Ability
 var button_taunt
 var taunt_cooldown_state:String = "Ready"
@@ -103,17 +108,17 @@ func _ready():
 	update_combat.connect(_on_update_combat)
 	
 	# Taunt Ability
-	button_taunt = get_node("CanvasLayer/Control/BoxContainer/HBoxContainer/TauntButton")
+	button_taunt = get_node("CanvasLayer/Control/BoxContainer/HBoxContainer/TauntButtonContainer/TauntButton")
 	button_taunt.pressed.connect(self.taunt_button_pressed)
 	
 	taunt_timer = Timer.new()
 	add_child(taunt_timer)
 	taunt_timer.autostart = false
-	taunt_timer.wait_time = 13
+	taunt_timer.wait_time = TAUNT_COOLDOWN
 	taunt_timer.connect("timeout", self.reset_taunt_timer)
 	
 	# Heal Ability
-	button_heal = get_node("CanvasLayer/Control/BoxContainer/HBoxContainer/HealButton")
+	button_heal = get_node("CanvasLayer/Control/BoxContainer/HBoxContainer/HealButtonContainer/HealButton")
 	button_heal.pressed.connect(self.heal_button_pressed)
 	
 	heal_timer = Timer.new()
@@ -123,7 +128,7 @@ func _ready():
 	heal_timer.connect("timeout", self.reset_heal_timer)
 	
 	# Damage Ability
-	button_damage = get_node("CanvasLayer/Control/BoxContainer/HBoxContainer/DamageButton")
+	button_damage = get_node("CanvasLayer/Control/BoxContainer/HBoxContainer/DamageButtonContainer/DamageButton")
 	button_damage.pressed.connect(self.damage_button_pressed)
 	
 	damage_timer = Timer.new()
@@ -168,9 +173,9 @@ func _process(delta):
 	spawn_enemy_check()
 	
 	# Update UI Timers
-	ui.update_taunt_timer(taunt_timer.time_left)
-	ui.update_damage_timer(damage_timer.time_left)
-	ui.update_heal_timer(heal_timer.time_left)
+	ui.update_taunt_timer(taunt_timer.time_left, TAUNT_COOLDOWN)
+	ui.update_damage_timer(damage_timer.time_left, DAMAGE_COOLDOWN)
+	ui.update_heal_timer(heal_timer.time_left, HEAL_COOLDOWN)
 
 # Spawns enemy/boss when entering a cave
 func spawn_enemy_check():

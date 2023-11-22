@@ -75,6 +75,17 @@ func spawn_company(spawnposition:Vector2):
 		hero.set_z_index(zindex)
 		zindex-=1
 		
+		if n==0:
+			hero.sprite_color = Color(74/255.0, 90/255.0, 1.0)
+		elif(n==1):
+			hero.sprite_color = Color(61/255.0, 252/255.0, 115/255.0)
+		elif(n==2):
+			hero.sprite_color = Color(252/255.0, 61/255.0, 61/255.0)
+		elif(n==3):
+			hero.sprite_color = Color(252/255.0, 211/255.0, 61/255.0)
+		elif(n==4):
+			hero.sprite_color = Color(183/255.0, 171/255.0, 171/255.0)
+		
 		# Set class roles
 		if n==0 or n==1:
 			hero.setRandomTankClass()
@@ -89,19 +100,19 @@ func spawn_company(spawnposition:Vector2):
 		# Update UI
 		if n==0:
 			ui.update_health_bar_0(hero.hitpoints, hero.max_hitpoints, hero.sprite_color)
-			ui.update_race_class_0(hero.race + "/" + hero.class_type)
+			#ui.update_race_class_0(hero.race + "/" + hero.class_type)
 		elif n==1:
 			ui.update_health_bar_1(hero.hitpoints, hero.max_hitpoints, hero.sprite_color)
-			ui.update_race_class_1(hero.race + "/" + hero.class_type)
+			#ui.update_race_class_1(hero.race + "/" + hero.class_type)
 		elif n==2:
 			ui.update_health_bar_2(hero.hitpoints, hero.max_hitpoints, hero.sprite_color)
-			ui.update_race_class_2(hero.race + "/" + hero.class_type)
+			#ui.update_race_class_2(hero.race + "/" + hero.class_type)
 		elif n==3:
 			ui.update_health_bar_3(hero.hitpoints, hero.max_hitpoints, hero.sprite_color)
-			ui.update_race_class_3(hero.race + "/" + hero.class_type)
+			#ui.update_race_class_3(hero.race + "/" + hero.class_type)
 		elif n==4:
 			ui.update_health_bar_4(hero.hitpoints, hero.max_hitpoints, hero.sprite_color)
-			ui.update_race_class_4(hero.race + "/" + hero.class_type)
+			#ui.update_race_class_4(hero.race + "/" + hero.class_type)
 	
 	# Setup followers
 	var previous_member = null
@@ -133,7 +144,6 @@ func update_hero_paths(company_state:String):
 			var hero = hero_list[update_hero_path_count]
 			if hero.target!=null:
 				var d = hero.getPosition().distance_to(hero.target.getPosition())
-				print("Distance "+str(d)+" - "+hero.target.state+" - "+str(hero.target.hitpoints))
 				if d < 100 and d > 5:
 					var start = Vector2(hero.getPosition()) / map.cell_size
 					var end = Vector2(hero.target.getPosition()) / map.cell_size

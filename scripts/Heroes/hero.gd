@@ -33,8 +33,8 @@ func _ready():
 	add_to_group("Heroes")
 	
 	# Assign a random color
-	var rng = RandomNumberGenerator.new()
-	sprite_color = Color(rng.randf_range(0, 1), rng.randf_range(0, 1), rng.randf_range(0, 1))
+	#var rng = RandomNumberGenerator.new()
+	#sprite_color = Color(rng.randf_range(0, 1), rng.randf_range(0, 1), rng.randf_range(0, 1))
 	#get_node("CharacterBody2D/Sprite2D").modulate = sprite_color
 	
 	# Assign a number, simple for debugging

@@ -16,5 +16,6 @@ func make_ground():
 	type = "ground"
 	get_parent().make_ground(Vector2(mapx, mapy))
 	get_node("StaticBody2D/CollisionShape2D").disabled = true
-	get_node("StaticBody2D/Ground").visible = true
-	get_node("StaticBody2D/Wall").visible = false
+	var rng = RandomNumberGenerator.new()
+	rng.randomize()
+	get_node("StaticBody2D/AnimatedSprite2D").set_frame(rng.randi_range(1, 8))
