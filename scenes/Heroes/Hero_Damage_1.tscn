@@ -85,5 +85,18 @@ autoplay = "idle"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
 shape = SubResource("CircleShape2D_8du5x")
 
+[node name="BloodParticles" type="CPUParticles2D" parent="CharacterBody2D"]
+emitting = false
+amount = 20
+lifetime = 0.25
+one_shot = true
+explosiveness = 0.5
+randomness = 1.0
+direction = Vector2(0, -5)
+spread = 74.09
+initial_velocity_min = 200.0
+initial_velocity_max = 200.0
+color = Color(0.823529, 0, 0, 1)
+
 [node name="AttackSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("12_5fnwb")

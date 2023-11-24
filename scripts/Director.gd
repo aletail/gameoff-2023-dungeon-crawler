@@ -374,6 +374,7 @@ func process_combat_queue():
 				#print("Character - Critical Hit for "+ str(dmg) + " damage")
 				monster.hitpoints = monster.hitpoints - dmg
 				hero.get_node("AttackSound").play()
+				monster.get_node("CharacterBody2D/BloodParticles").set_emitting(true)
 			#else:
 				#pass
 				#print("Character - miss")
@@ -399,6 +400,7 @@ func process_combat_queue():
 					#print("Monster - Hit for "+ str(dmg) + " damage")
 					hero.hitpoints = hero.hitpoints - dmg
 					monster.get_node("AttackSound").play()
+					hero.get_node("CharacterBody2D/BloodParticles").set_emitting(true)
 				#else:
 					#print("Monster - miss")
 				# set combat state to cooldown

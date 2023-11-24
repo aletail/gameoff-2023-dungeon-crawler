@@ -41,6 +41,7 @@ func _ready():
 	dead_removal_timer.wait_time = 2
 	dead_removal_timer.connect("timeout", self.set_state_to_remove)
 
+	get_node("CharacterBody2D/BloodParticles").set_emitting(false)
 #
 func set_state_to_remove():
 	if !is_boss:
