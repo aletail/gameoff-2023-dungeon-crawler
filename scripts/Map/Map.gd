@@ -385,6 +385,7 @@ func check_if_valid(start):
 	if astar_grid.is_in_boundsv(start):
 		return start
 	else:
+		#TODO - There is an instance where a monster is pushed way outside the map, and we can't seem to find a close tile
 		# return closest tile
 		print("Out of bounds, finding closest tile")
 		var last_d = 10000000

@@ -43,6 +43,7 @@ func _ready():
 	damage_buff_timer.connect("timeout", self.reset_damage_buff_timer)
 	
 	get_node("CharacterBody2D/BloodParticles").set_emitting(false)
+	get_node("CharacterBody2D/HealParticles").set_emitting(false)
 	
 	
 # Starts the damage buff timer

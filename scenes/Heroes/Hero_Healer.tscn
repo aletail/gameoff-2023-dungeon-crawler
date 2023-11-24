@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cccyvci5hiev7"]
+[gd_scene load_steps=17 format=3 uid="uid://cccyvci5hiev7"]
 
 [ext_resource type="Script" path="res://scripts/Heroes/hero.gd" id="1_1ntxh"]
 [ext_resource type="Texture2D" uid="uid://cwslid4l510ya" path="res://sprites/hero-healer-animated/combat/wizzard_m_hit_anim_f0.png" id="2_t08fr"]
@@ -11,7 +11,9 @@
 [ext_resource type="Texture2D" uid="uid://2ri2cqur4pcn" path="res://sprites/hero-healer-animated/move/wizzard_m_run_anim_f1.png" id="9_nuqw4"]
 [ext_resource type="Texture2D" uid="uid://1q7g63l0ov0n" path="res://sprites/hero-healer-animated/move/wizzard_m_run_anim_f2.png" id="10_ybn0r"]
 [ext_resource type="Texture2D" uid="uid://dhl6rlah8o315" path="res://sprites/hero-healer-animated/move/wizzard_m_run_anim_f3.png" id="11_ir51v"]
+[ext_resource type="Texture2D" uid="uid://csbu2fy5t5jn2" path="res://sprites/circle.png" id="12_dtptv"]
 [ext_resource type="AudioStream" uid="uid://cqxcxjwjovqui" path="res://sounds/26_sword_hit_1.wav" id="12_golts"]
+[ext_resource type="PackedScene" uid="uid://bq0oy4yj2s3x8" path="res://scenes/Particles/blood_particles.tscn" id="13_i86w7"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_1hbcn"]
 animations = [{
@@ -86,18 +88,20 @@ frame_progress = 0.871993
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
 shape = SubResource("CircleShape2D_8du5x")
 
-[node name="BloodParticles" type="CPUParticles2D" parent="CharacterBody2D"]
+[node name="HealParticles" type="CPUParticles2D" parent="CharacterBody2D"]
+position = Vector2(0, -42)
 emitting = false
-amount = 20
+amount = 300
 lifetime = 0.25
 one_shot = true
-explosiveness = 0.5
-randomness = 1.0
-direction = Vector2(0, -5)
-spread = 74.09
-initial_velocity_min = 200.0
-initial_velocity_max = 200.0
-color = Color(0.823529, 0, 0, 1)
+texture = ExtResource("12_dtptv")
+direction = Vector2(0, 1)
+initial_velocity_max = 190.0
+scale_amount_min = 0.0
+scale_amount_max = 1.5
+color = Color(0.776471, 0.760784, 0, 0.027451)
+
+[node name="BloodParticles" parent="CharacterBody2D" instance=ExtResource("13_i86w7")]
 
 [node name="AttackSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("12_golts")

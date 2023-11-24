@@ -168,6 +168,7 @@ func check_for_down_state():
 # Heal company to max hitpoints				
 func heal_company():
 	for h in hero_list:
+		h.get_node("CharacterBody2D/HealParticles").set_emitting(true)
 		h.hitpoints = h.max_hitpoints
 	
 # Adds the damage buff to all heroes	

@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://s1d8urq3yqyo"]
+[gd_scene load_steps=19 format=3 uid="uid://s1d8urq3yqyo"]
 
 [ext_resource type="Script" path="res://scripts/Heroes/hero.gd" id="1_kp26v"]
 [ext_resource type="Texture2D" uid="uid://boi2k8inr85uh" path="res://sprites/hero-tank-animated/combat/knight_f_hit_anim_f0.png" id="2_x43a4"]
@@ -14,6 +14,8 @@
 [ext_resource type="Texture2D" uid="uid://7cqlydo73a3s" path="res://sprites/light-circle.png" id="13_mgdp5"]
 [ext_resource type="AudioStream" uid="uid://cqxcxjwjovqui" path="res://sounds/26_sword_hit_1.wav" id="14_50vqm"]
 [ext_resource type="Script" path="res://scenes/Heroes/torch.gd" id="14_bc5r3"]
+[ext_resource type="PackedScene" uid="uid://dte5d6jluk4an" path="res://scenes/Particles/HealParticles.tscn" id="14_otyfn"]
+[ext_resource type="PackedScene" uid="uid://bq0oy4yj2s3x8" path="res://scenes/Particles/blood_particles.tscn" id="14_qsjcp"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_1hbcn"]
 animations = [{
@@ -95,18 +97,10 @@ texture = ExtResource("13_mgdp5")
 texture_scale = 3.0
 script = ExtResource("14_bc5r3")
 
-[node name="BloodParticles" type="CPUParticles2D" parent="CharacterBody2D"]
-emitting = false
-amount = 20
-lifetime = 0.25
-one_shot = true
-explosiveness = 0.5
-randomness = 1.0
-direction = Vector2(0, -5)
-spread = 74.09
-initial_velocity_min = 200.0
-initial_velocity_max = 200.0
-color = Color(0.823529, 0, 0, 1)
+[node name="BloodParticles" parent="CharacterBody2D" instance=ExtResource("14_qsjcp")]
+
+[node name="HealParticles" parent="CharacterBody2D" instance=ExtResource("14_otyfn")]
+position = Vector2(0, -22)
 
 [node name="AttackSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("14_50vqm")
