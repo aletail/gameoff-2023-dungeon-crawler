@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://c1fkn2onlk5d7"]
+[gd_scene load_steps=16 format=3 uid="uid://c1fkn2onlk5d7"]
 
 [ext_resource type="Script" path="res://scripts/Monsters/monster.gd" id="1_hcejd"]
 [ext_resource type="Texture2D" uid="uid://btb487yvb60v4" path="res://sprites/monster/combat/orc_warrior_run_anim_f0.png" id="2_2jib7"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://bsa6utca6xj6x" path="res://sprites/monster/move/orc_warrior_run_anim_f1.png" id="9_ghf8d"]
 [ext_resource type="Texture2D" uid="uid://702kda0ojeaq" path="res://sprites/monster/move/orc_warrior_run_anim_f2.png" id="10_uobmy"]
 [ext_resource type="Texture2D" uid="uid://bvyq6ykskib0k" path="res://sprites/monster/move/orc_warrior_run_anim_f3.png" id="11_iublp"]
+[ext_resource type="AudioStream" uid="uid://pe2y8d8tgtgh" path="res://sounds/17_orc_atk_sword_2.wav" id="13_o7vb0"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_b6v4n"]
 animations = [{
@@ -100,3 +101,6 @@ offset_right = 6.0
 offset_bottom = 10.9909
 scale = Vector2(1, 0.990991)
 horizontal_alignment = 1
+
+[node name="AttackSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("13_o7vb0")

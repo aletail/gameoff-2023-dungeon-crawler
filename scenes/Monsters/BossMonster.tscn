@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://qxuqqc74d5ji"]
+[gd_scene load_steps=16 format=3 uid="uid://qxuqqc74d5ji"]
 
 [ext_resource type="Script" path="res://scripts/Monsters/monster.gd" id="1_ilnxa"]
 [ext_resource type="Texture2D" uid="uid://ooab5tke6wkh" path="res://sprites/monster-boss/combat/ogre_run_anim_f0.png" id="2_as2nt"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://bxfp3bhbamrp7" path="res://sprites/monster-boss/move/ogre_run_anim_f1.png" id="9_87rvc"]
 [ext_resource type="Texture2D" uid="uid://8k0khpk44ujf" path="res://sprites/monster-boss/move/ogre_run_anim_f2.png" id="10_koxf4"]
 [ext_resource type="Texture2D" uid="uid://ch8djedhawjdt" path="res://sprites/monster-boss/move/ogre_run_anim_f3.png" id="11_nvw4x"]
+[ext_resource type="AudioStream" uid="uid://pe2y8d8tgtgh" path="res://sounds/17_orc_atk_sword_2.wav" id="13_mlr20"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_slm8a"]
 animations = [{
@@ -100,3 +101,6 @@ offset_right = 6.0
 offset_bottom = 13.9909
 scale = Vector2(1, 0.990991)
 horizontal_alignment = 1
+
+[node name="AttackSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("13_mlr20")

@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://bakaj75pvnpka"]
+[gd_scene load_steps=7 format=3 uid="uid://bakaj75pvnpka"]
 
 [ext_resource type="Script" path="res://scripts/director.gd" id="1_tminw"]
 [ext_resource type="PackedScene" uid="uid://cb4ymdmtgcpfx" path="res://scenes/Helpers/PathLine.tscn" id="2_pfwx0"]
 [ext_resource type="PackedScene" uid="uid://cfw0jrlssgtic" path="res://scenes/Interface/UI.tscn" id="2_xvcum"]
 [ext_resource type="PackedScene" uid="uid://w4glhgxfd0fb" path="res://scenes/Helpers/FramesPerSecond.tscn" id="3_g1t0m"]
+[ext_resource type="AudioStream" uid="uid://djl70g7qm8yfa" path="res://sounds/Goblins_Den_(Regular).wav" id="5_3pxfx"]
+[ext_resource type="AudioStream" uid="uid://b5knrbn8502qk" path="res://sounds/Goblins_Dance_(Battle).wav" id="6_2usob"]
 
 [node name="Director" type="Node2D"]
 script = ExtResource("1_tminw")
@@ -21,3 +23,10 @@ z_index = 10
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 color = Color(0.333333, 0.333333, 0.333333, 1)
+
+[node name="DefaultMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_3pxfx")
+autoplay = true
+
+[node name="BattleMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_2usob")

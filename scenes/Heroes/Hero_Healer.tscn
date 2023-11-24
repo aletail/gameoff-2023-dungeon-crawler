@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cccyvci5hiev7"]
+[gd_scene load_steps=15 format=3 uid="uid://cccyvci5hiev7"]
 
 [ext_resource type="Script" path="res://scripts/Heroes/hero.gd" id="1_1ntxh"]
 [ext_resource type="Texture2D" uid="uid://cwslid4l510ya" path="res://sprites/hero-healer-animated/combat/wizzard_m_hit_anim_f0.png" id="2_t08fr"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://2ri2cqur4pcn" path="res://sprites/hero-healer-animated/move/wizzard_m_run_anim_f1.png" id="9_nuqw4"]
 [ext_resource type="Texture2D" uid="uid://1q7g63l0ov0n" path="res://sprites/hero-healer-animated/move/wizzard_m_run_anim_f2.png" id="10_ybn0r"]
 [ext_resource type="Texture2D" uid="uid://dhl6rlah8o315" path="res://sprites/hero-healer-animated/move/wizzard_m_run_anim_f3.png" id="11_ir51v"]
+[ext_resource type="AudioStream" uid="uid://cqxcxjwjovqui" path="res://sounds/26_sword_hit_1.wav" id="12_golts"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_1hbcn"]
 animations = [{
@@ -84,3 +85,6 @@ frame_progress = 0.871993
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
 shape = SubResource("CircleShape2D_8du5x")
+
+[node name="AttackSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("12_golts")

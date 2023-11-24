@@ -56,15 +56,15 @@ func spawn_company(spawnposition:Vector2):
 	var zindex = 5
 	for n in company_size:
 		if n==0:
-			heroscene = load("res://Scenes/Heroes/Hero_Tank_1.tscn")
+			heroscene = load("res://scenes/Heroes/Hero_Tank_1.tscn")
 		elif(n==1):
-			heroscene = load("res://Scenes/Heroes/Hero_Tank_2.tscn")
+			heroscene = load("res://scenes/Heroes/Hero_Tank_2.tscn")
 		elif(n==2):
-			heroscene = load("res://Scenes/Heroes/Hero_Damage_1.tscn")
+			heroscene = load("res://scenes/Heroes/Hero_Damage_1.tscn")
 		elif(n==3):
-			heroscene = load("res://Scenes/Heroes/Hero_Damage_2.tscn")
+			heroscene = load("res://scenes/Heroes/Hero_Damage_2.tscn")
 		elif(n==4):
-			heroscene = load("res://Scenes/Heroes/Hero_Healer.tscn")
+			heroscene = load("res://scenes/Heroes/Hero_Healer.tscn")
 			
 		var hero = heroscene.instantiate();
 		hero.id = n

@@ -15,7 +15,7 @@ func _init(_map:Map):
 	
 # Spawns a monster at the specified spawn position
 func spawn_monster(spawnposition:Vector2, company_position:Vector2):
-	var monsterscene = load("res://Scenes/Monsters/Monster.tscn")
+	var monsterscene = load("res://scenes/Monsters/Monster.tscn")
 	var monster = monsterscene.instantiate();
 	monster.id = monster_list.size()
 	add_child(monster)
@@ -26,7 +26,7 @@ func spawn_monster(spawnposition:Vector2, company_position:Vector2):
 	
 # Spawns a boss monster
 func spawn_boss(spawnposition:Vector2, company_position:Vector2):
-	var monsterscene = load("res://Scenes/Monsters/BossMonster.tscn")
+	var monsterscene = load("res://scenes/Monsters/BossMonster.tscn")
 	var monster = monsterscene.instantiate();
 	monster.id = monster_list.size()
 	monster.is_boss = true

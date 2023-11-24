@@ -373,6 +373,7 @@ func process_combat_queue():
 					dmg = dice.roll(4, 6)
 				#print("Character - Critical Hit for "+ str(dmg) + " damage")
 				monster.hitpoints = monster.hitpoints - dmg
+				hero.get_node("AttackSound").play()
 			#else:
 				#pass
 				#print("Character - miss")
@@ -397,6 +398,7 @@ func process_combat_queue():
 						dmg = dice.roll(1, 4)
 					#print("Monster - Hit for "+ str(dmg) + " damage")
 					hero.hitpoints = hero.hitpoints - dmg
+					monster.get_node("AttackSound").play()
 				#else:
 					#print("Monster - miss")
 				# set combat state to cooldown
@@ -420,6 +422,8 @@ func update_company_state():
 		ui.update_health_bar_horde(horde_size - monster_manager.dead_state_count, horde_size, Color(0.75, 0, 0))
 		# The only way out of the combat state is if there are no monsters left in current spawn
 		if(monster_manager.monster_list.size()==0):
+			get_node("DefaultMusic").play()
+			get_node("BattleMusic").stop()
 			ui.horde_health_bar.visible=false
 			map.reset_tile_weights()
 			# Reset Ability Checks
@@ -448,6 +452,8 @@ func update_company_state():
 	else:
 		if(monster_manager.monster_list.size()>0):
 			company_state = "Combat"
+			get_node("DefaultMusic").stop()
+			get_node("BattleMusic").play()
 			ui.show_chat_bubble("Before Battle", hero_manager.hero_list[0])
 			# When entering combat, store the hero position (to be used later after battle) and clear their move list
 			for h in hero_manager.hero_list.size():

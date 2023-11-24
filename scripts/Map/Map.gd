@@ -25,7 +25,7 @@ func _ready():
 	initialize_grid()
 	
 	# Create tiles
-	var tscene = load("res://Scenes/Map/Tile.tscn")
+	var tscene = load("res://scenes/Map/Tile.tscn")
 	for x in grid_size.x:
 		tile_list_array.append([])
 		for y in grid_size.y:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://b8rqednycdq2y"]
+[gd_scene load_steps=15 format=3 uid="uid://b8rqednycdq2y"]
 
 [ext_resource type="Script" path="res://scripts/Heroes/hero.gd" id="1_4r5ie"]
 [ext_resource type="Texture2D" uid="uid://bsnsg7s18wett" path="res://sprites/hero-tank-animated-2/combat/dwarf_m_hit_anim_f0.png" id="2_ifwym"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://1lug4cqncp3b" path="res://sprites/hero-tank-animated-2/move/dwarf_m_run_anim_f1.png" id="9_5xjcj"]
 [ext_resource type="Texture2D" uid="uid://bqcqm0d56t2td" path="res://sprites/hero-tank-animated-2/move/dwarf_m_run_anim_f2.png" id="10_2mfpv"]
 [ext_resource type="Texture2D" uid="uid://dmulamwbt01j" path="res://sprites/hero-tank-animated-2/move/dwarf_m_run_anim_f3.png" id="11_fkuxn"]
+[ext_resource type="AudioStream" uid="uid://cqxcxjwjovqui" path="res://sounds/26_sword_hit_1.wav" id="12_n8xtw"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_1hbcn"]
 animations = [{
@@ -83,3 +84,6 @@ autoplay = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
 shape = SubResource("CircleShape2D_8du5x")
+
+[node name="AttackSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("12_n8xtw")
