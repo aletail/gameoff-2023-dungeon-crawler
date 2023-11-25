@@ -43,6 +43,15 @@ func _process(delta):
 	else:
 		company_cave_id = 0
 		
+	# Update Movement Path Line
+	if(get_parent().company_state!="Combat" && get_parent().company_state!="Formation"):
+		if(hero_list[0].move_list.size() > 1):
+			get_parent().get_node("PathLine").update_line(hero_list[0].move_list)
+		else:
+			get_parent().get_node("PathLine").clear_path_line()
+	else:
+		get_parent().get_node("PathLine").clear_path_line()
+		
 	# Update UI
 	ui.update_health_bar_0(hero_list[0].hitpoints, hero_list[0].max_hitpoints, hero_list[0].sprite_color)
 	ui.update_health_bar_1(hero_list[1].hitpoints, hero_list[1].max_hitpoints, hero_list[1].sprite_color)

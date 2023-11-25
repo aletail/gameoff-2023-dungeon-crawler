@@ -302,7 +302,6 @@ func _input(event):
 				var end = Vector2(get_global_mouse_position()) / map.cell_size
 				var path = map.find_path(start, end)
 				hero_manager.hero_list[0].move(path)
-				get_node("PathLine").update_line(path)
 	
 	if event is InputEventKey and event.is_released:
 		if event.keycode == KEY_1:
