@@ -70,6 +70,7 @@ var quit_to_main_menu_button_on_hero_defeat
 func _ready():
 	ui = get_node("CanvasLayer/Control")
 	camera = get_node("Camera2D")
+	get_node("CanvasLayer/DebugInfo").visible = false
 	
 	# Generate a map
 	map = Map.new(Vector2i(16,16), Vector2i(100,50))
@@ -341,8 +342,6 @@ func _input(event):
 		if event.pressed and event.keycode == KEY_3:
 			self.heal_button_pressed()
 		if event.pressed and event.keycode == KEY_F1:
-			print(str(event.keycode))
-			print("Why is this firing more then once?!")
 			get_node("CanvasLayer/DebugInfo").visible = !get_node("CanvasLayer/DebugInfo").visible
 			
 
