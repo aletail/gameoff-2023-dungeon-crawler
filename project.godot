@@ -17,6 +17,7 @@ boot_splash/show_image=false
 boot_splash/image="res://sprites/aletail-games-logo.png"
 boot_splash/fullsize=false
 config/icon="res://icon.svg"
+config/windows_native_icon="res://sprites/icon/icon.ico"
 
 [autoload]
 
