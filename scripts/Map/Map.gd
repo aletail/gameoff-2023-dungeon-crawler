@@ -10,6 +10,9 @@ var iterations:int = 40000
 var neighbors:int = 4
 var ground_chance:int = 44
 var min_cave_size:int = 40
+var noise_type = 3
+var frequency = 0.07
+var fractal_octaves = 5
 var caves:Array = []
 var cave_object_list:Array = []
 
@@ -24,6 +27,11 @@ func _init(cellsize, gridsize):
 func _ready():
 	initialize_grid()
 	
+	var rng = RandomNumberGenerator.new()
+	rng.randomize()
+	frequency = rng.randf_range(0.01, 0.1) # 0.07
+	fractal_octaves = rng.randi_range(1, 20) # 5
+	
 	# Create tiles
 	var tscene = load("res://scenes/Map/Tile.tscn")
 	for x in grid_size.x:
@@ -35,7 +43,6 @@ func _ready():
 			t.mapx = x
 			t.mapy = y
 			t.position = convert_to_global(Vector2(x, y))
-			var rng = RandomNumberGenerator.new()
 			rng.randomize()
 			t.get_node("StaticBody2D/AnimatedSprite2D").set_frame(rng.randi_range(1, 8))
 			add_child(t)
@@ -68,37 +75,10 @@ func get_spawn_point():
 # Returns the first off screen point found from inbound position
 func get_offscreen_spawn_point(pos:Vector2, cave_id:int):
 	pos = Vector2(pos) / cell_size
-	
-#	for x in range(pos.x, grid_size.x):
-#		for y in range(pos.y, grid_size.y):
-#			var t = get_tile(Vector2(x, y-1))
-#			if tile_list_array[x][y-1].get_node("VisibleOnScreenNotifier2D").is_on_screen()==false:
-#				if tile_list_array[x][y-1].type == "ground":
-#					return tile_list_array[x][y-1].position
 	for tile in caves[cave_id-1]:
 		var d = pos.distance_to(tile_list_array[tile.x][tile.y].position)
 		if(d > 50):
-			#print("Ideal Spawn")
-			#print(tile_list_array[tile.x][tile.y].position)
 			return tile_list_array[tile.x][tile.y].position
-
-	
-#	pos = Vector2(pos) / cell_size
-#	for x in range(0, grid_size.x):
-#		for y in range(0, grid_size.y):
-#			if tile_list_array[x][y].type == "ground" and tile_list_array[x][y].cave_id == cave_id:
-#				var d = pos.distance_to(tile_list_array[x][y].position)
-#				if(d < 50):
-#					print("Ideal Spawn")
-#					return tile_list_array[x][y].position
-#
-#	for x in range(pos.x, grid_size.x):
-#		for y in range(pos.y, grid_size.y):
-#			if tile_list_array[x][y].type == "ground":
-#				if tile_list_array[x][y].get_node("VisibleOnScreenNotifier2D").is_on_screen()==false:
-#					return tile_list_array[x][y].position
-	
-	
 	
 # Returns the type of tile, nothing if not found
 func get_tile_type(x:int, y:int):
@@ -115,12 +95,10 @@ func fill_roof():
 		
 # Randomly sets a tile to a ground tile type	
 func random_ground():
-	var rng = RandomNumberGenerator.new()
-	rng.randomize()
 	var noise = FastNoiseLite.new()
-	noise.noise_type = 3
-	noise.frequency = rng.randf_range(0.01, 0.1) # 0.07
-	noise.fractal_octaves = rng.randi_range(1, 20) # 5
+	noise.noise_type = noise_type
+	noise.frequency = frequency
+	noise.fractal_octaves = fractal_octaves
 	for x in range(1, grid_size.x-1):
 		for y in range(1, grid_size.y-1):
 			var n = noise.get_noise_2d(x, y)
@@ -358,13 +336,13 @@ func make_ground(v:Vector2):
 func add_tile_weight(v:Vector2):
 	var nv = Vector2(v / cell_size)
 	if(astar_grid.is_in_boundsv(nv)):
-		tile_weight_update.push_back([nv, 0.1])
+		tile_weight_update.push_back([nv, 0.01])
 		
 # Subtracts weight from the selected point
 func subtract_tile_weight(v:Vector2):
 	var nv = Vector2(v / cell_size)
 	if(astar_grid.is_in_boundsv(nv)):
-		tile_weight_update.push_back([nv, -0.1])
+		tile_weight_update.push_back([nv, -0.01])
 
 # Reset all tile weights to zero		
 func reset_tile_weights():

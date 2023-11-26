@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://csbu2fy5t5jn2" path="res://sprites/circle.png" id="1_ob64g"]
 
 [node name="BloodParticles" type="CPUParticles2D"]
+z_index = 11
 emitting = false
 amount = 20
 lifetime = 0.25

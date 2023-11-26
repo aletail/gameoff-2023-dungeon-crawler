@@ -4,7 +4,10 @@ var map:Map
 var hero_manager:HeroManager
 var monster_manager:MonsterManager
 var camera:Camera2D
+var camera_initial_zoom:int = 1
 var ui:Control
+
+var state:String = "Load"
 
 # Tracks the state of the company: Idle, Combat, Formation
 var company_state:String = "Idle"
@@ -14,6 +17,7 @@ var update_paths_timer:Timer
 
 # Horde settings, size, timer
 var horde_size:int = 20
+var horde_count:int = 1
 var horde_size_count:int = 0
 var spawn_horde_count:int = 0
 var spawn_horde_timer:Timer
@@ -35,9 +39,9 @@ var remove_from_combat_queue:Array = []
 signal update_combat(character, monster)
 
 # Ability Cooldown 
-const TAUNT_COOLDOWN = 13
-const DAMAGE_COOLDOWN = 13
-const HEAL_COOLDOWN = 13
+const TAUNT_COOLDOWN = 10
+const DAMAGE_COOLDOWN = 10
+const HEAL_COOLDOWN = 15
 
 # Taunt Ability
 var button_taunt
@@ -68,8 +72,21 @@ func _ready():
 	camera = get_node("Camera2D")
 	
 	# Generate a map
-	map = Map.new(Vector2i(16,16), Vector2i(200,50))
+	map = Map.new(Vector2i(16,16), Vector2i(100,50))
 	add_child(map)
+	get_node("CanvasLayer/DebugInfo").add_debug_text("map frequency", str(map.frequency))
+	get_node("CanvasLayer/DebugInfo").add_debug_text("map fractal octaves", str(map.fractal_octaves))
+	get_node("CanvasLayer/DebugInfo").add_debug_text("cave count", str(map.caves.size()))
+	
+	# Camera set limits
+	# left side
+	camera.set_limit(0, -200)
+	# top side
+	camera.set_limit(1, -200)
+	# right side
+	camera.set_limit(2, (map.grid_size.x * map.cell_size.x) + 200)
+	# bottom side
+	camera.set_limit(3, (map.grid_size.y * map.cell_size.y) + 200)
 	
 	# Hero Manager - Spawn company of heroes
 	hero_manager = HeroManager.new(map, ui)
@@ -155,42 +172,52 @@ func _ready():
 	
 # Main loop
 func _process(delta):
-	# Check for end of game, disable abilities based on heroes who are down
-	check_heroes()
-	
-	# Check boss, if spawned, ends game if boss is defeated
-	check_boss()
-	
-	# Update camera based on situation
-	update_camera(delta)
+	if state == "Load":
+		state = "Game Running"
+	elif state == "Game Running":
+		# Update company light
+		get_node("PointLight2D").position = hero_manager.company_position
 		
-	# Map - update tile weights
-	map.process_tile_weight_updates()
+		# Check for end of game, disable abilities based on heroes who are down
+		check_heroes()
 		
-	# Update Hero and Monster targets
-	hero_manager.update_hero_targets(monster_manager.monster_list)
-	monster_manager.update_monster_targets(hero_manager.hero_list, hero_manager.company_position, hero_manager.tank_list)
+		# Check boss, if spawned, ends game if boss is defeated
+		check_boss()
 		
-	# Process the combat queue
-	process_combat_queue()
-	
-	# Check for dead/down states for heroes and monsters
-	monster_manager.check_for_dead_state()
-	hero_manager.check_for_down_state()
-	
-	# Monitor company state
-	update_company_state()
-	
-	# Monster Cleanup
-	cleanup_monsters()
-	
-	# Check if enemies should be spawned
-	spawn_enemy_check()
-	
-	# Update UI Timers
-	ui.update_taunt_timer(taunt_timer.time_left, TAUNT_COOLDOWN)
-	ui.update_damage_timer(damage_timer.time_left, DAMAGE_COOLDOWN)
-	ui.update_heal_timer(heal_timer.time_left, HEAL_COOLDOWN)
+		# Update camera based on situation
+		update_camera(delta)
+			
+		# Map - update tile weights
+		map.process_tile_weight_updates()
+			
+		# Update Hero and Monster targets
+		hero_manager.update_hero_targets(monster_manager.monster_list)
+		monster_manager.update_monster_targets(hero_manager.hero_list, hero_manager.company_position, hero_manager.tank_list)
+			
+		# Process the combat queue
+		process_combat_queue()
+		
+		# Check for dead/down states for heroes and monsters
+		monster_manager.check_for_dead_state()
+		hero_manager.check_for_down_state()
+		
+		# Monitor company state
+		update_company_state()
+		
+		# Monster Cleanup
+		cleanup_monsters()
+		
+		# Check if enemies should be spawned
+		spawn_enemy_check()
+		
+		# Update UI Timers
+		ui.update_taunt_timer(taunt_timer.time_left, TAUNT_COOLDOWN)
+		ui.update_damage_timer(damage_timer.time_left, DAMAGE_COOLDOWN)
+		ui.update_heal_timer(heal_timer.time_left, HEAL_COOLDOWN)
+	elif state == "Pause Game":
+		pass
+		
+	get_node("CanvasLayer/DebugInfo").add_debug_text("cave_id", str(hero_manager.company_cave_id))
 
 func quit_to_main_menu():
 	var loading_scene_path = "res://scenes/MainMenu.tscn"
@@ -203,24 +230,24 @@ func spawn_enemy_check():
 		if hero_manager.company_cave_id != null and hero_manager.company_cave_id != 0:
 			track_current_cave = hero_manager.company_cave_id
 			cave_active = true
-			if track_current_cave == map.cave_object_list[map.cave_object_list.size()-1].id:
-				# spawn the boss
+			# Spawn a boss, if we do not have a lot of caves or if we reached the last cave in our list
+			if map.caves.size()<=1 or track_current_cave == map.cave_object_list[map.cave_object_list.size()-1].id:
 				ui.show_chat_bubble("Boss Battle", hero_manager.hero_list[0])
 				spawn_boss_timer.start()
 			else:
 				# start horde spawn
 				ui.show_chat_bubble("Horde Battle", hero_manager.hero_list[0])
 				var rng = RandomNumberGenerator.new()
-				horde_size = rng.randi_range(20, 100)
+				horde_size = rng.randi_range(20, 100) * horde_count
 				horde_size_count = horde_size
-				spawn_horde_timer.wait_time = rng.randf_range(5.0, 10.0)
+				spawn_horde_timer.wait_time = rng.randf_range(4.0, 7.0)
 				spawn_horde_timer.start()
-#				print("Horde Size: " + str(horde_size))
-#				print("Wait time: " + str(spawn_horde_timer.wait_time))
-#				print("----------")
-#		elif hero_manager.company_cave_id==null:
-#			track_current_cave = hero_manager.company_cave_id
-#			hero_manager.get_hero_chat("Enter Cave")
+				horde_count+= 1
+				get_node("CanvasLayer/DebugInfo").add_debug_text("horde_count", str(horde_count))
+				get_node("CanvasLayer/DebugInfo").add_debug_text("horde_size", str(horde_size))
+		elif hero_manager.company_cave_id == 0:
+			track_current_cave = hero_manager.company_cave_id
+			ui.show_chat_bubble("Enter Cave", hero_manager.hero_list[0])
 
 
 # Update camera
@@ -230,10 +257,11 @@ func update_camera(delta):
 		if(hero_manager.company_position):
 			camera.position = camera.position.lerp(hero_manager.company_position, delta * 5)
 	else:
-		if track_current_cave == 0:
-			camera.zoom = camera.zoom.lerp(Vector2(2.5, 2.5), delta * 1.25)
+		if hero_manager.company_cave_id == 0:
+			camera.zoom = camera.zoom.lerp(Vector2(3, 3), delta * 1.25)
+			camera_initial_zoom = 1
 		else:
-			camera.zoom = camera.zoom.lerp(Vector2(1, 1), delta * 1.25)
+			camera.zoom = camera.zoom.lerp(Vector2(camera_initial_zoom, camera_initial_zoom), delta * 1.25)
 			
 		camera.position = camera.position.lerp(hero_manager.hero_list[0].getPosition(), delta * 5)
 	
@@ -244,6 +272,7 @@ func check_boss():
 		if(monster_manager.monster_list.size()==0):
 			# GAME OVER!
 			#get_tree().paused = true
+			state = "Pause Game"
 			ui.game_over_panel.visible = true
 		else:
 			ui.update_health_bar_boss(boss_object.hitpoints, boss_object.max_hitpoints, Color(0.75, 0, 0))
@@ -277,6 +306,7 @@ func check_heroes():
 	if hero_defeat_count==5:
 		# GAME OVER!
 		#get_tree().paused = true
+		state = "Pause Game"
 		ui.game_over_panel_defeat.visible = true
 	
 	# Check for abilities that need disabled
@@ -303,13 +333,17 @@ func _input(event):
 				var path = map.find_path(start, end)
 				hero_manager.hero_list[0].move(path)
 	
-	if event is InputEventKey and event.is_released:
-		if event.keycode == KEY_1:
+	if event is InputEventKey:
+		if event.pressed and event.keycode == KEY_1:
 			self.taunt_button_pressed()
-		if event.keycode == KEY_2:
+		if event.pressed and event.keycode == KEY_2:
 			self.damage_button_pressed()
-		if event.keycode == KEY_3:
+		if event.pressed and event.keycode == KEY_3:
 			self.heal_button_pressed()
+		if event.pressed and event.keycode == KEY_F1:
+			print(str(event.keycode))
+			print("Why is this firing more then once?!")
+			get_node("CanvasLayer/DebugInfo").visible = !get_node("CanvasLayer/DebugInfo").visible
 			
 
 # Spawn Boss Monster		
@@ -367,13 +401,14 @@ func process_combat_queue():
 			var dice = Dice.new()
 			if(dice.roll(1, 20) > hitchance):
 				hero.state = "Combat"
-				var dmg = dice.roll(3, 6)
-				if(hero.damage_buff):
-					dmg = dice.roll(4, 6)
+				var dmg = dice.roll(2, 6)
+				if(hero.damage_buff or hero.is_damage):
+					dmg = dice.roll(6, 6)
 				#print("Character - Critical Hit for "+ str(dmg) + " damage")
 				monster.hitpoints = monster.hitpoints - dmg
 				hero.get_node("AttackSound").play()
 				monster.get_node("CharacterBody2D/BloodParticles").set_emitting(true)
+				monster.knockback = hero.character_body.position.normalized()
 			#else:
 				#pass
 				#print("Character - miss")
@@ -396,10 +431,18 @@ func process_combat_queue():
 						dmg = dice.roll(1, 8)
 					else:
 						dmg = dice.roll(1, 4)
+					# Tanks take half damage
+					if hero.is_tank:
+						dmg = dmg/2
 					#print("Monster - Hit for "+ str(dmg) + " damage")
 					hero.hitpoints = hero.hitpoints - dmg
 					monster.get_node("AttackSound").play()
 					hero.get_node("CharacterBody2D/BloodParticles").set_emitting(true)
+					if(monster.is_boss):
+						hero.knockback = monster.character_body.position.normalized() * 2
+					else:
+						hero.knockback = monster.character_body.position.normalized()
+						
 				#else:
 					#print("Monster - miss")
 				# set combat state to cooldown
@@ -488,6 +531,7 @@ func taunt_button_pressed():
 		button_taunt.disabled = true
 		set_taunt_cooldown_state("Cooldown")
 		monster_manager.add_taunt_debuff()
+		ui.show_chat_bubble("Ability Taunt", hero_manager.hero_list[0])
 		
 # Reset the taunt timer, enables the taunt button
 func reset_taunt_timer():
@@ -508,6 +552,7 @@ func heal_button_pressed():
 		button_heal.disabled = true
 		set_heal_cooldown_state("Cooldown")
 		hero_manager.heal_company()
+		ui.show_chat_bubble("Ability Heal", hero_manager.hero_list[4])
 
 # Reset the heal timer, enables the heal button
 func reset_heal_timer():
@@ -527,6 +572,7 @@ func damage_button_pressed():
 		button_damage.disabled = true
 		set_damage_cooldown_state("Cooldown")
 		hero_manager.add_damage_buff()
+		ui.show_chat_bubble("Ability Damage", hero_manager.hero_list[2])
 
 # Reset the damage timer, enables the damage button
 func reset_damage_timer():

@@ -1,16 +1,22 @@
-[gd_scene load_steps=7 format=3 uid="uid://bakaj75pvnpka"]
+[gd_scene load_steps=9 format=3 uid="uid://bakaj75pvnpka"]
 
 [ext_resource type="Script" path="res://scripts/director.gd" id="1_tminw"]
 [ext_resource type="PackedScene" uid="uid://cb4ymdmtgcpfx" path="res://scenes/Helpers/PathLine.tscn" id="2_pfwx0"]
 [ext_resource type="PackedScene" uid="uid://cfw0jrlssgtic" path="res://scenes/Interface/UI.tscn" id="2_xvcum"]
-[ext_resource type="PackedScene" uid="uid://w4glhgxfd0fb" path="res://scenes/Helpers/FramesPerSecond.tscn" id="3_g1t0m"]
+[ext_resource type="PackedScene" uid="uid://w4glhgxfd0fb" path="res://scenes/Helpers/DebugPanel.tscn" id="3_g1t0m"]
 [ext_resource type="AudioStream" uid="uid://djl70g7qm8yfa" path="res://sounds/Goblins_Den_(Regular).wav" id="5_3pxfx"]
 [ext_resource type="AudioStream" uid="uid://b5knrbn8502qk" path="res://sounds/Goblins_Dance_(Battle).wav" id="6_2usob"]
+[ext_resource type="Texture2D" uid="uid://7cqlydo73a3s" path="res://sprites/light-circle.png" id="7_0iboc"]
+[ext_resource type="Script" path="res://scenes/Heroes/torch.gd" id="8_1rd0a"]
 
 [node name="Director" type="Node2D"]
 script = ExtResource("1_tminw")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+limit_left = 0
+limit_top = 0
+limit_right = 3200
+limit_bottom = 800
 
 [node name="PathLine" parent="." instance=ExtResource("2_pfwx0")]
 z_index = 10
@@ -19,10 +25,10 @@ z_index = 10
 
 [node name="Control" parent="CanvasLayer" instance=ExtResource("2_xvcum")]
 
-[node name="FPSLabel" parent="CanvasLayer" instance=ExtResource("3_g1t0m")]
+[node name="DebugInfo" parent="CanvasLayer" instance=ExtResource("3_g1t0m")]
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
-color = Color(0.333333, 0.333333, 0.333333, 1)
+color = Color(0.4, 0.4, 0.4, 1)
 
 [node name="DefaultMusic" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_3pxfx")
@@ -30,3 +36,11 @@ autoplay = true
 
 [node name="BattleMusic" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_2usob")
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+color = Color(0.964706, 0.815686, 0.627451, 1)
+shadow_enabled = true
+shadow_color = Color(0, 0, 0, 1)
+texture = ExtResource("7_0iboc")
+texture_scale = 3.0
+script = ExtResource("8_1rd0a")

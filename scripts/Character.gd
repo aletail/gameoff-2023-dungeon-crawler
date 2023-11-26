@@ -16,6 +16,7 @@ var target = null
 var target_object = null
 var combat_cooldown:String = "Ready"
 var combat_global_timer:Timer
+var knockback:Vector2 = Vector2.ZERO
 
 var sprite_color
 

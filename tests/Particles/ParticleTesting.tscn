@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://y3hd4us42347"]
+[gd_scene load_steps=14 format=3 uid="uid://y3hd4us42347"]
 
 [ext_resource type="Texture2D" uid="uid://boi2k8inr85uh" path="res://sprites/hero-tank-animated/combat/knight_f_hit_anim_f0.png" id="1_ly8bq"]
 [ext_resource type="Texture2D" uid="uid://co0tgeclvt51" path="res://sprites/hero-tank-animated/dead/knight_f_idle_anim_f0.png" id="2_ckaop"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://bh6rjq0tgvl1u" path="res://sprites/hero-tank-animated/move/knight_f_run_anim_f2.png" id="9_kaxtc"]
 [ext_resource type="Texture2D" uid="uid://1nlamji84klq" path="res://sprites/hero-tank-animated/move/knight_f_run_anim_f3.png" id="10_1mswo"]
 [ext_resource type="Texture2D" uid="uid://csbu2fy5t5jn2" path="res://sprites/circle.png" id="11_4emtj"]
+[ext_resource type="PackedScene" uid="uid://ghn3vevnkk53" path="res://scenes/Particles/tile_break_particles.tscn" id="12_l11sk"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_5w25w"]
 animations = [{
@@ -101,3 +102,5 @@ initial_velocity_max = 190.0
 scale_amount_min = 0.0
 scale_amount_max = 1.5
 color = Color(0.776471, 0.760784, 0, 0.027451)
+
+[node name="TileBreakParticles" parent="." instance=ExtResource("12_l11sk")]

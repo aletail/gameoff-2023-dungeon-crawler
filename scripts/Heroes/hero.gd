@@ -63,7 +63,7 @@ func _physics_process(delta):
 			get_parent().map.add_tile_weight(point)
 			
 			# Move and detect collisions
-			character_body.velocity = character_body.position.direction_to(point) * speed
+			character_body.velocity = (character_body.position.direction_to(point) + knockback) * speed
 			var collision = character_body.move_and_collide(character_body.velocity * delta)
 			# If a collision is detected, check what we collided with
 			if collision:
@@ -90,6 +90,9 @@ func _physics_process(delta):
 			state = "Idle"
 	elif(state=="Idle"):
 		pass
+		
+	if knockback != Vector2.ZERO:
+		knockback = lerp(knockback, Vector2.ZERO, 0.1)
 
 # Sets a random tank class
 func setRandomTankClass():
@@ -126,8 +129,8 @@ func setRandomDamageClass():
 # Sets a random healer class
 func setRandomHealerClass():
 	is_healer = true
-	hitpoints = 10
-	max_hitpoints = 10
+	hitpoints = 15
+	max_hitpoints = 15
 	var dice = Dice.new()
 	var classroll = dice.roll(1, 4)
 	if(classroll <= 2):

@@ -13,7 +13,7 @@ func _ready():
 
 func torch_flicker():
 	var rng = RandomNumberGenerator.new()
-	energy = rng.randf_range(0.75, 1.25)
+	energy = rng.randf_range(0.25, 0.75)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

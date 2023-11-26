@@ -14,8 +14,8 @@ var is_boss:bool = false
 func _ready():
 	# Set attributes based on type of monster
 	if(is_boss):
-		speed = 64
-		hitpoints = 1000
+		speed = 96
+		hitpoints = 6000
 		max_hitpoints = hitpoints
 		attack_speed = 1
 	else:
@@ -69,16 +69,16 @@ func _physics_process(delta):
 			# While moving through this tile, increase the weight of the tile
 			get_parent().map.add_tile_weight(point)
 			
-			character_body.velocity = character_body.position.direction_to(point) * speed
+			character_body.velocity = (character_body.position.direction_to(point) + knockback) * speed
 			var collision = character_body.move_and_collide(character_body.velocity * delta)
 			if collision:
 				if(collision.get_collider().get_parent().is_in_group("Heroes")):
 					get_parent().get_parent().emit_signal("update_combat", collision.get_collider().get_parent(), self)
 				if(collision.get_collider().get_parent().is_in_group("Objects")):
 					character_body.velocity = character_body.velocity.slide(collision.get_normal())
-					if(is_boss):
-						# Break down any walls
-						collision.get_collider().get_parent().make_ground()
+					#if(is_boss):
+					# Break down any walls
+					collision.get_collider().get_parent().make_ground()
 						
 			var d = character_body.position.distance_to(point);
 			if d < 10: # Movement is alot smoother with 10 here
@@ -87,3 +87,6 @@ func _physics_process(delta):
 		else:
 			move_list.clear()
 			state = "Idle"
+		
+	if knockback != Vector2.ZERO:
+		knockback = lerp(knockback, Vector2.ZERO, 0.1)

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bakaj75pvnpka"]
 
-[ext_resource type="Script" path="res://scripts/Director.gd" id="1_tminw"]
+[ext_resource type="Script" path="res://scripts/director.gd" id="1_tminw"]
 [ext_resource type="PackedScene" uid="uid://cfw0jrlssgtic" path="res://scenes/Interface/UI.tscn" id="2_xvcum"]
 
 [node name="Director" type="Node2D"]

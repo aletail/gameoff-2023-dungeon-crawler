@@ -1,8 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://w4glhgxfd0fb"]
-
-[ext_resource type="Script" path="res://tests/Monsters/FPSCounter.gd" id="1_sxkjp"]
-
-[node name="FPSLabel" type="Label"]
-offset_right = 72.0
-offset_bottom = 23.0
-script = ExtResource("1_sxkjp")

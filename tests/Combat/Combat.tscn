@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dthd65r0lwgnd"]
 
 [ext_resource type="Script" path="res://tests/Combat/Combat.gd" id="1_rgan5"]
-[ext_resource type="PackedScene" uid="uid://w4glhgxfd0fb" path="res://scenes/Helpers/FramesPerSecond.tscn" id="2_4xagy"]
+[ext_resource type="PackedScene" uid="uid://w4glhgxfd0fb" path="res://scenes/Helpers/DebugPanel.tscn" id="2_4xagy"]
 
 [node name="Combat" type="Node2D"]
 script = ExtResource("1_rgan5")

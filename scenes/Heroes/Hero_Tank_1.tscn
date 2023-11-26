@@ -90,6 +90,7 @@ autoplay = "idle"
 shape = SubResource("CircleShape2D_8du5x")
 
 [node name="PointLight2D" type="PointLight2D" parent="CharacterBody2D"]
+visible = false
 color = Color(0.964706, 0.815686, 0.627451, 1)
 shadow_enabled = true
 shadow_color = Color(0, 0, 0, 1)

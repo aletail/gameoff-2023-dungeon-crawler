@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://jpunjyidmrdq"]
+[gd_scene load_steps=15 format=3 uid="uid://jpunjyidmrdq"]
 
 [ext_resource type="Script" path="res://scripts/Map/tile.gd" id="1_byepj"]
 [ext_resource type="Texture2D" uid="uid://b1dpfqoylafxu" path="res://sprites/tiles/floor_1.png" id="4_5rumg"]
@@ -7,8 +7,10 @@
 [ext_resource type="Texture2D" uid="uid://cpdb0jco3awo5" path="res://sprites/tiles/floor_4.png" id="7_5lgai"]
 [ext_resource type="Texture2D" uid="uid://dqa80vum8ijqy" path="res://sprites/tiles/floor_5.png" id="8_aoroj"]
 [ext_resource type="Texture2D" uid="uid://c62eiyt3q6r85" path="res://sprites/tiles/floor_6.png" id="9_ci5og"]
+[ext_resource type="PackedScene" uid="uid://ghn3vevnkk53" path="res://scenes/Particles/tile_break_particles.tscn" id="10_fh1ji"]
 [ext_resource type="Texture2D" uid="uid://culb1vtwu6psl" path="res://sprites/tiles/floor_7.png" id="10_r80ms"]
 [ext_resource type="Texture2D" uid="uid://cdfu5uq4qbivw" path="res://sprites/tiles/floor_8.png" id="11_pur7n"]
+[ext_resource type="AudioStream" uid="uid://8njk5tqm0cqf" path="res://sounds/crashing through debris 14.wav" id="11_s2p31"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2a5kd"]
 radius = 7.0
@@ -79,3 +81,10 @@ offset_bottom = 8.0
 theme_override_font_sizes/font_size = 9
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="TileBreakParticles" parent="." instance=ExtResource("10_fh1ji")]
+position = Vector2(0, 0)
+
+[node name="TileBreakSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("11_s2p31")
+volume_db = -5.0
