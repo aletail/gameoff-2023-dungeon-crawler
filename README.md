@@ -1,5 +1,6 @@
 # Slay The #!@*&%
 Game Off 2023 Entry
+https://itch.io/jam/game-off-2023
 
 ## Overview
 You control a party of heroes as they enter a dark cavern to find and slay the monster that needs put down. As you explore the caverns, monsters will spawn where you must make use of your abilities to defeat your foes. Your company of heroes consists of two tank characters, two damage characters and one healer character. Continue exploring and eventually you will come across the monster you have been searching for.
