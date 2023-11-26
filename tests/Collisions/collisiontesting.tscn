@@ -1,9 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://1evphe1vm5s1"]
-
-[ext_resource type="Script" path="res://tests/Collisions/collisiontesting.gd" id="1_02st6"]
-[ext_resource type="PackedScene" uid="uid://w4glhgxfd0fb" path="res://scenes/Helpers/DebugPanel.tscn" id="2_b0kss"]
-
-[node name="collisiontesting" type="Node2D"]
-script = ExtResource("1_02st6")
-
-[node name="Label" parent="." instance=ExtResource("2_b0kss")]
