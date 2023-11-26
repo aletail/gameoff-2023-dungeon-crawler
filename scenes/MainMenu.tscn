@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://413mywiwhjlc"]
+[gd_scene load_steps=4 format=3 uid="uid://413mywiwhjlc"]
 
 [ext_resource type="Script" path="res://scenes/MainMenu.gd" id="1_3dgbg"]
 [ext_resource type="Texture2D" uid="uid://b0qgqrgwpdsdp" path="res://sprites/slay-the-blank-logo.png" id="2_ply6p"]
+[ext_resource type="Texture2D" uid="uid://cxvo8ochmw0an" path="res://sprites/aletail-games-logo.png" id="3_insp2"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -34,4 +35,21 @@ text = "Start Game"
 [node name="Sprite2D" type="Sprite2D" parent="CenterContainer/ButtonContainer"]
 position = Vector2(-205, -114)
 texture = ExtResource("2_ply6p")
+centered = false
+
+[node name="BoxContainer" type="BoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 0
+vertical = true
+
+[node name="AletailGamesLogo" type="Sprite2D" parent="BoxContainer"]
+position = Vector2(-194, -72)
+scale = Vector2(0.35, 0.35)
+texture = ExtResource("3_insp2")
 centered = false
