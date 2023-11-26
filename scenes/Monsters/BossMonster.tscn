@@ -1,0 +1,109 @@
+[gd_scene load_steps=17 format=3 uid="uid://qxuqqc74d5ji"]
+
+[ext_resource type="Script" path="res://scripts/Monsters/monster.gd" id="1_ilnxa"]
+[ext_resource type="Texture2D" uid="uid://ooab5tke6wkh" path="res://sprites/monster-boss/combat/ogre_run_anim_f0.png" id="2_as2nt"]
+[ext_resource type="Texture2D" uid="uid://ctkraauxu5koy" path="res://sprites/taunt-circle.png" id="2_xjbey"]
+[ext_resource type="Texture2D" uid="uid://c1gagkr0p2g6d" path="res://sprites/monster-boss/dead/orc_warrior_idle_anim_f0.png" id="3_etg50"]
+[ext_resource type="Texture2D" uid="uid://wf8oob5gr3eb" path="res://sprites/monster-boss/idle/ogre_idle_anim_f0.png" id="4_mt2f7"]
+[ext_resource type="Texture2D" uid="uid://dajc018wtofis" path="res://sprites/monster-boss/idle/ogre_idle_anim_f1.png" id="5_exilc"]
+[ext_resource type="Texture2D" uid="uid://btvwbpkehh4a8" path="res://sprites/monster-boss/idle/ogre_idle_anim_f2.png" id="6_n2gnv"]
+[ext_resource type="Texture2D" uid="uid://dwboomyc3jt0d" path="res://sprites/monster-boss/idle/ogre_idle_anim_f3.png" id="7_dsvjq"]
+[ext_resource type="Texture2D" uid="uid://b6diwqcaxswi" path="res://sprites/monster-boss/move/ogre_run_anim_f0.png" id="8_j6y34"]
+[ext_resource type="Texture2D" uid="uid://bxfp3bhbamrp7" path="res://sprites/monster-boss/move/ogre_run_anim_f1.png" id="9_87rvc"]
+[ext_resource type="Texture2D" uid="uid://8k0khpk44ujf" path="res://sprites/monster-boss/move/ogre_run_anim_f2.png" id="10_koxf4"]
+[ext_resource type="Texture2D" uid="uid://ch8djedhawjdt" path="res://sprites/monster-boss/move/ogre_run_anim_f3.png" id="11_nvw4x"]
+[ext_resource type="AudioStream" uid="uid://pe2y8d8tgtgh" path="res://sounds/17_orc_atk_sword_2.wav" id="13_mlr20"]
+[ext_resource type="PackedScene" uid="uid://bq0oy4yj2s3x8" path="res://scenes/Particles/blood_particles.tscn" id="13_n6bxs"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_slm8a"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_as2nt")
+}],
+"loop": true,
+"name": &"combat",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_etg50")
+}],
+"loop": true,
+"name": &"down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_mt2f7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_exilc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_n2gnv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_dsvjq")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_j6y34")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_87rvc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_koxf4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_nvw4x")
+}],
+"loop": true,
+"name": &"move",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2saen"]
+radius = 30.0666
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_ilnxa")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+collision_layer = 2
+floor_stop_on_slope = false
+floor_constant_speed = true
+
+[node name="TauntCircle" type="Sprite2D" parent="CharacterBody2D"]
+show_behind_parent = true
+position = Vector2(0, 28)
+scale = Vector2(1.75, 1.75)
+texture = ExtResource("2_xjbey")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D"]
+position = Vector2(0, -10)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_slm8a")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+shape = SubResource("CircleShape2D_2saen")
+
+[node name="Label" type="Label" parent="CharacterBody2D"]
+offset_left = -6.0
+offset_top = -12.0091
+offset_right = 6.0
+offset_bottom = 13.9909
+scale = Vector2(1, 0.990991)
+horizontal_alignment = 1
+
+[node name="BloodParticles" parent="CharacterBody2D" instance=ExtResource("13_n6bxs")]
+
+[node name="AttackSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("13_mlr20")

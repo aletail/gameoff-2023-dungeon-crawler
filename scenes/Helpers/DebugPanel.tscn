@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://w4glhgxfd0fb"]
+
+[ext_resource type="Script" path="res://scripts/Helpers/debug-panel.gd" id="1_xdg15"]
+
+[node name="FPSLabel" type="Label"]
+offset_right = 72.0
+offset_bottom = 23.0
+script = ExtResource("1_xdg15")
+
+[node name="DebugInfo" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_top = 23.0
+offset_right = 494.0
+offset_bottom = 315.0

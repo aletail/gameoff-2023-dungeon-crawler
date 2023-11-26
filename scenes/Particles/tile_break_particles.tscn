@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://ghn3vevnkk53"]
+
+[ext_resource type="Texture2D" uid="uid://doltycnnrol1p" path="res://sprites/tiles/tile-break.png" id="1_qjbui"]
+
+[node name="TileBreakParticles" type="CPUParticles2D"]
+light_mask = 3
+position = Vector2(218, 0)
+emitting = false
+amount = 100
+one_shot = true
+explosiveness = 1.0
+texture = ExtResource("1_qjbui")
+emission_shape = 3
+emission_rect_extents = Vector2(16, 16)
+direction = Vector2(0, -1)
+spread = 25.0
+initial_velocity_max = 500.0

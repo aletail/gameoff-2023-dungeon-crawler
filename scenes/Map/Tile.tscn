@@ -1,0 +1,90 @@
+[gd_scene load_steps=15 format=3 uid="uid://jpunjyidmrdq"]
+
+[ext_resource type="Script" path="res://scripts/Map/tile.gd" id="1_byepj"]
+[ext_resource type="Texture2D" uid="uid://b1dpfqoylafxu" path="res://sprites/tiles/floor_1.png" id="4_5rumg"]
+[ext_resource type="Texture2D" uid="uid://dq5xhm7otry6p" path="res://sprites/tiles/floor_2.png" id="5_rnlg0"]
+[ext_resource type="Texture2D" uid="uid://b8bclaiu488rr" path="res://sprites/tiles/floor_3.png" id="6_lnfmk"]
+[ext_resource type="Texture2D" uid="uid://cpdb0jco3awo5" path="res://sprites/tiles/floor_4.png" id="7_5lgai"]
+[ext_resource type="Texture2D" uid="uid://dqa80vum8ijqy" path="res://sprites/tiles/floor_5.png" id="8_aoroj"]
+[ext_resource type="Texture2D" uid="uid://c62eiyt3q6r85" path="res://sprites/tiles/floor_6.png" id="9_ci5og"]
+[ext_resource type="PackedScene" uid="uid://ghn3vevnkk53" path="res://scenes/Particles/tile_break_particles.tscn" id="10_fh1ji"]
+[ext_resource type="Texture2D" uid="uid://culb1vtwu6psl" path="res://sprites/tiles/floor_7.png" id="10_r80ms"]
+[ext_resource type="Texture2D" uid="uid://cdfu5uq4qbivw" path="res://sprites/tiles/floor_8.png" id="11_pur7n"]
+[ext_resource type="AudioStream" uid="uid://8njk5tqm0cqf" path="res://sounds/crashing through debris 14.wav" id="11_s2p31"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2a5kd"]
+radius = 7.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_mssfd"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": null
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_5rumg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_rnlg0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_lnfmk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_5lgai")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_aoroj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_ci5og")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_r80ms")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_pur7n")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_ttt70"]
+polygon = PackedVector2Array(-8, -8, -8, 8, 8, 8, 8, -8)
+
+[node name="Tile" type="Node2D"]
+script = ExtResource("1_byepj")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("CircleShape2D_2a5kd")
+disabled = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="StaticBody2D"]
+sprite_frames = SubResource("SpriteFrames_mssfd")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="StaticBody2D"]
+occluder = SubResource("OccluderPolygon2D_ttt70")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+scale = Vector2(0.8, 0.8)
+
+[node name="Label" type="Label" parent="."]
+visible = false
+offset_left = -4.0
+offset_top = -8.0
+offset_right = 4.0
+offset_bottom = 8.0
+theme_override_font_sizes/font_size = 9
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TileBreakParticles" parent="." instance=ExtResource("10_fh1ji")]
+position = Vector2(0, 0)
+
+[node name="TileBreakSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("11_s2p31")
+volume_db = -5.0

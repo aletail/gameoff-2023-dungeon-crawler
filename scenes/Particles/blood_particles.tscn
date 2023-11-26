@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://bq0oy4yj2s3x8"]
+
+[ext_resource type="Texture2D" uid="uid://csbu2fy5t5jn2" path="res://sprites/circle.png" id="1_ob64g"]
+
+[node name="BloodParticles" type="CPUParticles2D"]
+z_index = 11
+emitting = false
+amount = 20
+lifetime = 0.25
+one_shot = true
+explosiveness = 0.5
+randomness = 1.0
+texture = ExtResource("1_ob64g")
+direction = Vector2(0, -5)
+spread = 74.09
+initial_velocity_min = 200.0
+initial_velocity_max = 200.0
+scale_amount_min = 0.0
+scale_amount_max = 0.25
+color = Color(0.823529, 0, 0, 1)

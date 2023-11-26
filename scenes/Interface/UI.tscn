@@ -1,0 +1,332 @@
+[gd_scene load_steps=11 format=3 uid="uid://cfw0jrlssgtic"]
+
+[ext_resource type="Script" path="res://scenes/Interface/UI.gd" id="1_xcdvj"]
+[ext_resource type="Texture2D" uid="uid://crf1r5kn1urju" path="res://sprites/ui/progress-texture-back.png" id="2_2kldk"]
+[ext_resource type="Texture2D" uid="uid://csgl63klhprkl" path="res://sprites/ui/button-taunt.png" id="2_ivt4k"]
+[ext_resource type="Texture2D" uid="uid://bt22bnfgwop8c" path="res://sprites/ui/button-taunt-disabled.png" id="3_47l25"]
+[ext_resource type="Texture2D" uid="uid://dj058t5xr7y7r" path="res://sprites/ui/progress-texture-front.png" id="3_frqgj"]
+[ext_resource type="Texture2D" uid="uid://xbkiwgp0pxub" path="res://sprites/ui/button-damage.png" id="5_dp25j"]
+[ext_resource type="Texture2D" uid="uid://fxh44m18k0v4" path="res://sprites/ui/button-damage-disabled.png" id="6_tv4md"]
+[ext_resource type="Texture2D" uid="uid://dhbd68t7wh5ti" path="res://sprites/ui/button-heal.png" id="7_2oy0t"]
+[ext_resource type="Texture2D" uid="uid://cu7d5lygc4wjd" path="res://sprites/ui/button-heal-disabled.png" id="8_4nwk8"]
+[ext_resource type="Texture2D" uid="uid://qfsev0arhwab" path="res://sprites/chat-bubble.png" id="10_uysok"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xcdvj")
+
+[node name="BoxContainer" type="BoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -258.0
+offset_top = -85.0
+offset_right = 258.0
+grow_horizontal = 2
+grow_vertical = 0
+vertical = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 0
+
+[node name="TauntButtonContainer" type="PanelContainer" parent="BoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="CooldownProgress" type="TextureProgressBar" parent="BoxContainer/HBoxContainer/TauntButtonContainer"]
+layout_mode = 2
+max_value = 12.0
+texture_progress = ExtResource("3_frqgj")
+tint_progress = Color(0.337255, 0.313726, 0.294118, 1)
+
+[node name="TauntButton" type="TextureButton" parent="BoxContainer/HBoxContainer/TauntButtonContainer"]
+layout_mode = 2
+tooltip_text = "When used monsters will target your tank characters"
+texture_normal = ExtResource("2_ivt4k")
+texture_disabled = ExtResource("3_47l25")
+
+[node name="DamageButtonContainer" type="PanelContainer" parent="BoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="CooldownProgress" type="TextureProgressBar" parent="BoxContainer/HBoxContainer/DamageButtonContainer"]
+layout_mode = 2
+max_value = 12.0
+texture_progress = ExtResource("3_frqgj")
+tint_progress = Color(0.337255, 0.313726, 0.294118, 1)
+
+[node name="DamageButton" type="TextureButton" parent="BoxContainer/HBoxContainer/DamageButtonContainer"]
+layout_mode = 2
+tooltip_text = "When used a damage buff is aapplied for 10 seconds"
+texture_normal = ExtResource("5_dp25j")
+texture_disabled = ExtResource("6_tv4md")
+
+[node name="HealButtonContainer" type="PanelContainer" parent="BoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="CooldownProgress" type="TextureProgressBar" parent="BoxContainer/HBoxContainer/HealButtonContainer"]
+layout_mode = 2
+max_value = 12.0
+texture_progress = ExtResource("3_frqgj")
+tint_progress = Color(0.337255, 0.313726, 0.294118, 1)
+
+[node name="HealButton" type="TextureButton" parent="BoxContainer/HBoxContainer/HealButtonContainer"]
+layout_mode = 2
+tooltip_text = "When used the entire company will have its health restored"
+texture_normal = ExtResource("7_2oy0t")
+texture_disabled = ExtResource("8_4nwk8")
+
+[node name="HeroInformation" type="HBoxContainer" parent="BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 10
+
+[node name="Hero_0" type="BoxContainer" parent="BoxContainer/HeroInformation"]
+layout_mode = 2
+vertical = true
+
+[node name="RaceClass" type="Label" parent="BoxContainer/HeroInformation/Hero_0"]
+layout_mode = 2
+text = "Benito Sourtoes"
+horizontal_alignment = 1
+
+[node name="Healthbar" type="TextureProgressBar" parent="BoxContainer/HeroInformation/Hero_0"]
+layout_mode = 2
+value = 100.0
+texture_under = ExtResource("2_2kldk")
+texture_progress = ExtResource("3_frqgj")
+
+[node name="DownLabel" type="Label" parent="BoxContainer/HeroInformation/Hero_0/Healthbar"]
+layout_mode = 2
+offset_left = 11.0
+offset_top = 10.0
+offset_right = 197.0
+offset_bottom = 38.0
+text = "Down"
+horizontal_alignment = 1
+
+[node name="Hero_1" type="BoxContainer" parent="BoxContainer/HeroInformation"]
+layout_mode = 2
+vertical = true
+
+[node name="RaceClass" type="Label" parent="BoxContainer/HeroInformation/Hero_1"]
+layout_mode = 2
+text = "Redhot"
+horizontal_alignment = 1
+
+[node name="Healthbar" type="TextureProgressBar" parent="BoxContainer/HeroInformation/Hero_1"]
+layout_mode = 2
+value = 100.0
+texture_under = ExtResource("2_2kldk")
+texture_progress = ExtResource("3_frqgj")
+
+[node name="DownLabel" type="Label" parent="BoxContainer/HeroInformation/Hero_1/Healthbar"]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 10.0
+offset_right = 199.0
+offset_bottom = 38.0
+text = "Down"
+horizontal_alignment = 1
+
+[node name="Hero_2" type="BoxContainer" parent="BoxContainer/HeroInformation"]
+layout_mode = 2
+vertical = true
+
+[node name="RaceClass" type="Label" parent="BoxContainer/HeroInformation/Hero_2"]
+layout_mode = 2
+text = "Noriah Whisperpants"
+horizontal_alignment = 1
+
+[node name="Healthbar" type="TextureProgressBar" parent="BoxContainer/HeroInformation/Hero_2"]
+layout_mode = 2
+value = 100.0
+texture_under = ExtResource("2_2kldk")
+texture_progress = ExtResource("3_frqgj")
+
+[node name="DownLabel" type="Label" parent="BoxContainer/HeroInformation/Hero_2/Healthbar"]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 10.0
+offset_right = 196.0
+offset_bottom = 38.0
+text = "Down"
+horizontal_alignment = 1
+
+[node name="Hero_3" type="BoxContainer" parent="BoxContainer/HeroInformation"]
+layout_mode = 2
+vertical = true
+
+[node name="RaceClass" type="Label" parent="BoxContainer/HeroInformation/Hero_3"]
+layout_mode = 2
+text = "Goldy Silientfoot"
+horizontal_alignment = 1
+
+[node name="Healthbar" type="TextureProgressBar" parent="BoxContainer/HeroInformation/Hero_3"]
+layout_mode = 2
+value = 100.0
+texture_under = ExtResource("2_2kldk")
+texture_progress = ExtResource("3_frqgj")
+
+[node name="DownLabel" type="Label" parent="BoxContainer/HeroInformation/Hero_3/Healthbar"]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 10.0
+offset_right = 198.0
+offset_bottom = 38.0
+text = "Down"
+horizontal_alignment = 1
+
+[node name="Hero_4" type="BoxContainer" parent="BoxContainer/HeroInformation"]
+layout_mode = 2
+vertical = true
+
+[node name="RaceClass" type="Label" parent="BoxContainer/HeroInformation/Hero_4"]
+layout_mode = 2
+text = "Aimee Stellarsweats"
+horizontal_alignment = 1
+
+[node name="Healthbar" type="TextureProgressBar" parent="BoxContainer/HeroInformation/Hero_4"]
+layout_mode = 2
+value = 100.0
+texture_under = ExtResource("2_2kldk")
+texture_progress = ExtResource("3_frqgj")
+
+[node name="DownLabel" type="Label" parent="BoxContainer/HeroInformation/Hero_4/Healthbar"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 199.0
+offset_bottom = 38.0
+text = "Down"
+horizontal_alignment = 1
+
+[node name="GameOverPanel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 251.0
+offset_top = 10.0
+offset_right = 935.0
+offset_bottom = 266.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="GameOverPanel"]
+layout_mode = 2
+offset_top = 63.0
+offset_right = 684.0
+offset_bottom = 207.0
+bbcode_enabled = true
+text = "[p align=center][font_size=30px]Congratulations,
+You have slayed the #!@*&%![/font_size][/p]
+
+[p align=center]On to the next adventure![/p]"
+
+[node name="QuitMainMenuButton" type="Button" parent="GameOverPanel"]
+layout_mode = 0
+offset_left = 262.0
+offset_top = 207.0
+offset_right = 417.0
+offset_bottom = 238.0
+text = "Quit to main menu"
+
+[node name="GameOverPanel_Defeat" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 251.0
+offset_top = 10.0
+offset_right = 935.0
+offset_bottom = 217.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="GameOverPanel_Defeat"]
+layout_mode = 2
+offset_top = 63.0
+offset_right = 684.0
+offset_bottom = 154.0
+bbcode_enabled = true
+text = "[p align=center][font_size=30px]You have been defeated![/font_size][/p]"
+
+[node name="QuitMainMenuButton" type="Button" parent="GameOverPanel_Defeat"]
+layout_mode = 0
+offset_left = 262.0
+offset_top = 154.0
+offset_right = 417.0
+offset_bottom = 185.0
+text = "Quit to main menu"
+
+[node name="BossHealthBarContainer" type="BoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 10.0
+offset_right = 150.0
+offset_bottom = 61.0
+grow_horizontal = 2
+alignment = 1
+vertical = true
+
+[node name="BossHealthBar" type="ProgressBar" parent="BossHealthBarContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+value = 100.0
+
+[node name="Label" type="Label" parent="BossHealthBarContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Boss"
+horizontal_alignment = 1
+
+[node name="HordeHealthBarContainer" type="BoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 10.0
+offset_right = 150.0
+offset_bottom = 61.0
+grow_horizontal = 2
+alignment = 1
+vertical = true
+
+[node name="HealthBar" type="ProgressBar" parent="HordeHealthBarContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+value = 100.0
+
+[node name="Label" type="Label" parent="HordeHealthBarContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Horde"
+horizontal_alignment = 1
+
+[node name="ChatBubbleContainer" type="Node2D" parent="."]
+position = Vector2(0, -25)
+
+[node name="Sprite2D" type="Sprite2D" parent="ChatBubbleContainer"]
+z_index = 5
+position = Vector2(-68, -54)
+scale = Vector2(0.675, 0.41)
+texture = ExtResource("10_uysok")
+centered = false
+
+[node name="RichTextLabel" type="RichTextLabel" parent="ChatBubbleContainer"]
+z_index = 5
+offset_left = -60.0
+offset_top = -48.0
+offset_right = 59.0
+offset_bottom = -20.0
+size_flags_horizontal = 3
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 10
+bbcode_enabled = true
+text = "Lets see what
+Two lines look like!"
+fit_content = true
+metadata/_edit_use_anchors_ = true

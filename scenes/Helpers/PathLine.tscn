@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://cb4ymdmtgcpfx"]
+
+[ext_resource type="Script" path="res://scenes/Helpers/PathLine.gd" id="1_ehne4"]
+[ext_resource type="Texture2D" uid="uid://qgunxdtv3wol" path="res://sprites/path-marker.png" id="2_0igqx"]
+
+[node name="PathLine" type="Node2D"]
+script = ExtResource("1_ehne4")
+
+[node name="Line2D" type="Line2D" parent="."]
+width = 1.0
+default_color = Color(1, 1, 1, 0.501961)
+
+[node name="TargetMarker" type="Sprite2D" parent="."]
+texture = ExtResource("2_0igqx")

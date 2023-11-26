@@ -1,0 +1,106 @@
+[gd_scene load_steps=17 format=3 uid="uid://ck0i7tpgprlo0"]
+
+[ext_resource type="Script" path="res://scripts/Heroes/hero.gd" id="1_rsp72"]
+[ext_resource type="Texture2D" uid="uid://bb7vm3wjah6ti" path="res://sprites/hero-damage-1-animated/combat/elf_f_hit_anim_f0.png" id="2_cvqg3"]
+[ext_resource type="Texture2D" uid="uid://bgh22xjsxtlyq" path="res://sprites/hero-damage-1-animated/dead/elf_f_idle_anim_f0.png" id="3_1uake"]
+[ext_resource type="Texture2D" uid="uid://cmoo3kwojq82t" path="res://sprites/hero-damage-1-animated/idle/elf_f_idle_anim_f0.png" id="4_46bvy"]
+[ext_resource type="Texture2D" uid="uid://cndoeu4138lpg" path="res://sprites/hero-damage-1-animated/idle/elf_f_idle_anim_f1.png" id="5_o71fe"]
+[ext_resource type="Texture2D" uid="uid://d1bo3tgnmjjp2" path="res://sprites/hero-damage-1-animated/idle/elf_f_idle_anim_f2.png" id="6_rcfsp"]
+[ext_resource type="Texture2D" uid="uid://dwv51oeykobaw" path="res://sprites/hero-damage-1-animated/idle/elf_f_idle_anim_f3.png" id="7_jxxev"]
+[ext_resource type="Texture2D" uid="uid://dbdpvldy4m6pp" path="res://sprites/hero-damage-1-animated/move/elf_f_run_anim_f0.png" id="8_bfu40"]
+[ext_resource type="Texture2D" uid="uid://cspjvqdkotjyt" path="res://sprites/hero-damage-1-animated/move/elf_f_run_anim_f1.png" id="9_vu2op"]
+[ext_resource type="Texture2D" uid="uid://by8p5hh7nfwvi" path="res://sprites/hero-damage-1-animated/move/elf_f_run_anim_f2.png" id="10_qk5jr"]
+[ext_resource type="Texture2D" uid="uid://bpdsq1lhgcsf4" path="res://sprites/hero-damage-1-animated/move/elf_f_run_anim_f3.png" id="11_x16lk"]
+[ext_resource type="Texture2D" uid="uid://csbu2fy5t5jn2" path="res://sprites/circle.png" id="12_3rcse"]
+[ext_resource type="AudioStream" uid="uid://cqxcxjwjovqui" path="res://sounds/26_sword_hit_1.wav" id="12_5fnwb"]
+[ext_resource type="PackedScene" uid="uid://bq0oy4yj2s3x8" path="res://scenes/Particles/blood_particles.tscn" id="13_is5gj"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1hbcn"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_cvqg3")
+}],
+"loop": true,
+"name": &"combat",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_1uake")
+}],
+"loop": true,
+"name": &"down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_46bvy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_o71fe")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_rcfsp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_jxxev")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_bfu40")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_vu2op")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_qk5jr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_x16lk")
+}],
+"loop": true,
+"name": &"move",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8du5x"]
+radius = 7.01783
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_rsp72")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D"]
+position = Vector2(0, -2)
+sprite_frames = SubResource("SpriteFrames_1hbcn")
+animation = &"combat"
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+shape = SubResource("CircleShape2D_8du5x")
+
+[node name="HealParticles" type="CPUParticles2D" parent="CharacterBody2D"]
+position = Vector2(0, -22)
+emitting = false
+amount = 300
+lifetime = 0.25
+one_shot = true
+texture = ExtResource("12_3rcse")
+direction = Vector2(0, 1)
+initial_velocity_max = 190.0
+scale_amount_min = 0.0
+scale_amount_max = 1.5
+color = Color(0.776471, 0.760784, 0, 0.027451)
+
+[node name="BloodParticles" parent="CharacterBody2D" instance=ExtResource("13_is5gj")]
+
+[node name="AttackSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("12_5fnwb")
